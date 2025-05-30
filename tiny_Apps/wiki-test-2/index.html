@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="nord">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PixelWiki - Pixel Art in Digital Media</title>
+
+    <!-- External Resources -->
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5/themes.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/iconify/3.1.1/iconify.min.js"></script>
+
+    <style>
+        /* Base Typography */
+        body, h1, h2, h3 {
+            font-family: 'Press Start 2P', cursive;
+        }
+
+        body {
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Layout */
+        .container {
+            max-width: 1024px;
+            margin: 1.25rem auto;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .content {
+            padding: 1.25rem;
+        }
+
+        /* Headings */
+        h1, h2 {
+            border-bottom: 1px solid;
+            padding-bottom: 0.25rem;
+            margin-bottom: 0.625rem;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-top: 0;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            margin-top: 0;
+        }
+
+        h3 {
+            font-size: 1.125rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Text Elements */
+        p {
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+        }
+
+        .meta {
+            font-size: 0.875rem;
+            opacity: 0.7;
+            margin-bottom: 1rem;
+        }
+
+        /* Media */
+        figure {
+            margin: 1.5rem 0;
+            text-align: center;
+        }
+
+        figure img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid;
+            border-radius: 0.25rem;
+        }
+
+        figcaption {
+            font-size: 0.875rem;
+            opacity: 0.7;
+            margin-top: 0.5rem;
+            font-style: italic;
+        }
+
+        /* Lists */
+        ul {
+            list-style: none;
+            padding-left: 1.5rem;
+            font-size: 0.875rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        li .iconify {
+            margin-right: 0.5rem;
+            margin-top: 0.125rem;
+            height: 1rem;
+            width: 1rem;
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            font-size: 0.875rem;
+        }
+
+        th, td {
+            padding: 0.75rem;
+            border: 1px solid;
+            text-align: left;
+        }
+
+        th {
+            font-weight: bold;
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        /* Blockquote */
+        blockquote {
+            margin: 1.5rem 0;
+            padding: 1rem 1.5rem;
+            border-left: 4px solid;
+            background-color: rgba(0, 0, 0, 0.05);
+            font-style: italic;
+            font-size: 0.875rem;
+        }
+
+        /* References */
+        .refs {
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid;
+        }
+
+        .refs ol {
+            padding-left: 2rem;
+            list-style: decimal;
+        }
+
+        .refs li {
+            display: list-item;
+            margin-bottom: 0.75rem;
+        }
+
+        /* External Links */
+        .ext-link {
+            color: #0066cc;
+            text-decoration: underline;
+        }
+
+        .ext-link:hover {
+            color: #004499;
+        }
+
+        /* Utility Classes */
+        .flex { display: flex; }
+        .items-center { align-items: center; }
+        .items-start { align-items: flex-start; }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <main class="content border">
+            <!-- Header -->
+            <header>
+                <h1>Pixel Art in Digital Media</h1>
+                <div class="meta">
+                    Last edited: December 15, 2024
+                </div>
+            </header>
+
+            <!-- Hero Image -->
+            <figure>
+                <img
+                    src="https://cdn.midjourney.com/9ac2c365-9b05-4f06-aa90-5a8a790d25c4/0_0.png"
+                    alt="Retro computers and game devices displaying pixel art"
+                >
+                <figcaption>
+                    A classic example of pixel art showcasing the distinctive blocky aesthetic that defined early video game graphics and continues to influence modern digital art.
+                </figcaption>
+            </figure>
+
+            <!-- Content Sections -->
+            <section id="intro">
+                <h2>Introduction</h2>
+                <p>
+                    Pixel art is a form of digital art created through the use of software, where images are edited on the pixel level.
+                    The aesthetic for this kind of graphics comes from 8-bit and 16-bit computers and video game consoles,
+                    in addition to other limited systems such as graphing calculators.<sup><a href="#ref1">1</a></sup>
+                </p>
+
+                <blockquote>
+                    "Pixel art is not just a limitation imposed by old technology, but a deliberate artistic choice that embraces constraints to create unique visual experiences." - Digital Art Institute
+                </blockquote>
+
+                <div>
+                    <h3 class="flex items-center">
+                        <span class="iconify" data-icon="material-symbols:info"></span>
+                        Key Features:
+                    </h3>
+                    <ul>
+                        <li>
+                            <span class="iconify" data-icon="material-symbols:grid-on"></span>
+                            Individual pixel manipulation for precise control
+                        </li>
+                        <li>
+                            <span class="iconify" data-icon="material-symbols:palette"></span>
+                            Limited color palettes for artistic constraint
+                        </li>
+                        <li>
+                            <span class="iconify" data-icon="material-symbols:aspect-ratio"></span>
+                            Low resolution aesthetics
+                        </li>
+                        <li>
+                            <span class="iconify" data-icon="material-symbols:history"></span>
+                            Nostalgic retro gaming appeal
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="history">
+                <h2>Historical Development</h2>
+                <p>
+                    The history of pixel art is closely tied to the history of computers and digital graphics.
+                    Early computer systems had limited resolution and color depth, forcing artists to work with individual pixels to create images.<sup><a href="#ref2">2</a></sup>
+                </p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Era</th>
+                            <th>Key Developments</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1970s-1980s</td>
+                            <td>Early computer graphics and arcade games</td>
+                        </tr>
+                        <tr>
+                            <td>1980s-1990s</td>
+                            <td>Home console era (NES, SNES, Genesis)</td>
+                        </tr>
+                        <tr>
+                            <td>2000s</td>
+                            <td>Decline due to 3D graphics advancement</td>
+                        </tr>
+                        <tr>
+                            <td>2010s-Present</td>
+                            <td>Revival in indie games and mobile apps</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div>
+                    <h3 class="flex items-center">
+                        <span class="iconify" data-icon="material-symbols:timeline"></span>
+                        Timeline:
+                    </h3>
+                    <ul>
+                        <li>
+                            <span class="iconify" data-icon="material-symbols:calendar-month"></span>
+                            <strong>1970s-1980s:</strong> Early computer graphics and arcade games
+                        </li>
+                        <li>
+                            <span class="iconify" data-icon="material-symbols:calendar-month"></span>
+                            <strong>1980s-1990s:</strong> Home console era (NES, SNES, Genesis)
+                        </li>
+                        <li>
+                            <span class="iconify" data-icon="material-symbols:calendar-month"></span>
+                            <strong>2000s:</strong> Decline due to 3D graphics advancement
+                        </li>
+                        <li>
+                            <span class="iconify" data-icon="material-symbols:calendar-month"></span>
+                            <strong>2010s-Present:</strong> Revival in indie games and mobile apps
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="techniques">
+                <h2>Core Techniques</h2>
+                <p>
+                    Creating effective pixel art involves several key techniques that artists must master to achieve professional results.
+                    For comprehensive tutorials, visit <a href="https://www.pixelartacademy.com" class="ext-link">Pixel Art Academy</a>.
+                </p>
+
+                <div>
+                    <h3 class="flex items-center">
+                        <span class="iconify" data-icon="material-symbols:brush"></span>
+                        Essential Methods:
+                    </h3>
+                    <ul>
+                        <li>
+                            <span class="iconify" data-icon="material-symbols:edit"></span>
+                            <strong>Line Art:</strong> Drawing precise lines one pixel at a time
+                        </li>
+                        <li>
+                            <span class="iconify" data-icon="material-symbols:texture"></span>
+                            <strong>Dithering:</strong> Simulating colors and smooth transitions
+                        </li>
+                        <li>
+                            <span class="iconify" data-icon="material-symbols:blur-on"></span>
+                            <strong>Anti-aliasing:</strong> Manual pixel-level edge smoothing
+                        </li>
+                        <li>
+                            <span class="iconify" data-icon="material-symbols:layers"></span>
+                            <strong>Clustering:</strong> Grouping similar colors for readability
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="color">
+                <h2>Color Theory and Palettes</h2>
+                <p>
+                    Color is a critical aspect of pixel art. Due to technical limitations of early hardware, artists often worked with severely restricted color palettes.
+                </p>
+
+                <div>
+                    <h3 class="flex items-center">
+                        <span class="iconify" data-icon="material-symbols:colorize"></span>
+                        Palette Management:
+                    </h3>
+                    <ul>
+                        <li>
+                            <span class="iconify" data-icon="material-symbols:format-color-fill"></span>
+                            Color cycling for animation effects
+                        </li>
+                        <li>
+                            <span class="iconify" data-icon="material-symbols:gradient"></span>
+                            Indexed color systems
+                        </li>
+                        <li>
+                            <span class="iconify" data-icon="material-symbols:contrast"></span>
+                            High contrast for readability
+                        </li>
+                        <li>
+                            <span class="iconify" data-icon="material-symbols:mood"></span>
+                            Mood setting through color choices
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="dithering">
+                <h2>Dithering Techniques</h2>
+                <p>
+                    Dithering is a technique used to simulate color depth and gradient using a limited number of colors. It involves placing different colored pixels in patterns that trick the eye into perceiving colors not actually present.
+                </p>
+
+                <div>
+                    <h3 class="flex items-center">
+                        <span class="iconify" data-icon="material-symbols:pattern"></span>
+                        Common Methods:
+                    </h3>
+                    <ul>
+                        <li>
+                            <span class="iconify" data-icon="material-symbols:grid-3x3"></span>
+                            <strong>Ordered Dithering:</strong> Uses predefined patterns for consistent results
+                        </li>
+                        <li>
+                            <span class="iconify" data-icon="material-symbols:scatter-plot"></span>
+                            <strong>Floyd-Steinberg:</strong> Error diffusion for smooth gradients
+                        </li>
+                        <li>
+                            <span class="iconify" data-icon="material-symbols:apps"></span>
+                            <strong>Random Dithering:</strong> Creates organic, textured appearance
+                        </li>
+                        <li>
+                            <span class="iconify" data-icon="material-symbols:tune"></span>
+                            <strong>Custom Patterns:</strong> Artist-defined dithering for unique effects
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="modern">
+                <h2>Modern Applications</h2>
+                <p>
+                    Despite the availability of advanced graphics technology, pixel art remains popular today for its nostalgic aesthetic, distinct visual style, and often lower resource requirements.<sup><a href="#ref3">3</a></sup>
+                    Many developers share their work on <a href="https://www.pixeljoint.com" class="ext-link">PixelJoint</a>.
+                </p>
+
+                <div>
+                    <h3 class="flex items-center">
+                        <span class="iconify" data-icon="material-symbols:rocket-launch"></span>
+                        Current Uses:
+                    </h3>
+                    <ul>
+                        <li>
+                            <span class="iconify" data-icon="material-symbols:sports-esports"></span>
+                            <strong>Indie Games:</strong> Popular choice for independent developers
+                        </li>
+                        <li>
+                            <span class="iconify" data-icon="material-symbols:phone-android"></span>
+                            <strong>Mobile Apps:</strong> Optimized for small screens and limited resources
+                        </li>
+                        <li>
+                            <span class="iconify" data-icon="material-symbols:web"></span>
+                            <strong>Web Design:</strong> Icons, avatars, and decorative elements
+                        </li>
+                        <li>
+                            <span class="iconify" data-icon="material-symbols:sell"></span>
+                            <strong>NFTs & Digital Art:</strong> Collectible pixel art has gained significant value
+                        </li>
+                        <li>
+                            <span class="iconify" data-icon="material-symbols:brush"></span>
+                            <strong>Art Education:</strong> Teaching fundamental digital art principles
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- References -->
+            <section class="refs">
+                <h2>References</h2>
+                <ol>
+                    <li id="ref1">Johnson, M. (2020). "Digital Art Fundamentals: Understanding Pixel-Based Creation." Journal of Computer Graphics, 15(3), 45-62.</li>
+                    <li id="ref2">Smith, A. & Davis, R. (2019). "Evolution of Computer Graphics: From Pixels to Polygons." Technology History Review, 8(2), 112-128.</li>
+                    <li id="ref3">Brown, L. (2023). "The Resurgence of Pixel Art in Modern Gaming." Indie Developer Quarterly, 12(4), 78-95.</li>
+                </ol>
+            </section>
+        </main>
+    </div>
+</body>
+</html>
