@@ -174,6 +174,29 @@ func (hub *AppHub) handleAppStatic(w http.ResponseWriter, r *http.Request) {
                 return
         }
 
+        // Set correct MIME type based on file extension
+        ext := filepath.Ext(filePath)
+        switch ext {
+        case ".css":
+                w.Header().Set("Content-Type", "text/css")
+        case ".js":
+                w.Header().Set("Content-Type", "application/javascript")
+        case ".html":
+                w.Header().Set("Content-Type", "text/html")
+        case ".json":
+                w.Header().Set("Content-Type", "application/json")
+        case ".png":
+                w.Header().Set("Content-Type", "image/png")
+        case ".jpg", ".jpeg":
+                w.Header().Set("Content-Type", "image/jpeg")
+        case ".gif":
+                w.Header().Set("Content-Type", "image/gif")
+        case ".svg":
+                w.Header().Set("Content-Type", "image/svg+xml")
+        case ".ico":
+                w.Header().Set("Content-Type", "image/x-icon")
+        }
+
         http.ServeFile(w, r, fullPath)
 }
 
