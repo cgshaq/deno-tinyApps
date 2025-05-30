@@ -132,7 +132,7 @@ func (hub *AppHub) handleAppsAPI(w http.ResponseWriter, r *http.Request) {
         }
 }
 
-// handleAppVisit increments visit count and redirects to app
+// handleAppVisit increments visit count and serves the app with proper base URL
 func (hub *AppHub) handleAppVisit(w http.ResponseWriter, r *http.Request) {
         appName := strings.TrimPrefix(r.URL.Path, "/app/")
         if app, exists := hub.apps[appName]; exists {
@@ -140,9 +140,25 @@ func (hub *AppHub) handleAppVisit(w http.ResponseWriter, r *http.Request) {
                 // In a real application, you might want to persist this to storage
         }
         
-        // Serve the app's index.html
+        // Read the app's index.html
         appPath := filepath.Join(hub.appsFolder, appName, "index.html")
-        http.ServeFile(w, r, appPath)
+        content, err := os.ReadFile(appPath)
+        if err != nil {
+                http.NotFound(w, r)
+                return
+        }
+        
+        // Inject base tag to fix relative paths
+        htmlContent := string(content)
+        baseTag := fmt.Sprintf(`<base href="/app/%s/">`, appName)
+        
+        // Insert base tag after <head>
+        if strings.Contains(htmlContent, "<head>") {
+                htmlContent = strings.Replace(htmlContent, "<head>", "<head>\n    "+baseTag, 1)
+        }
+        
+        w.Header().Set("Content-Type", "text/html")
+        w.Write([]byte(htmlContent))
 }
 
 // handleAppStatic serves static files for apps
@@ -229,8 +245,10 @@ func main() {
                 if r.URL.Path == "/" {
                         http.ServeFile(w, r, "index.html")
                 } else if r.URL.Path == "/style.css" {
+                        w.Header().Set("Content-Type", "text/css")
                         http.ServeFile(w, r, "style.css")
                 } else if r.URL.Path == "/script.js" {
+                        w.Header().Set("Content-Type", "application/javascript")
                         http.ServeFile(w, r, "script.js")
                 } else {
                         http.NotFound(w, r)
