@@ -1,0 +1,11 @@
+{
+    "title": "QuickLinks Hub",
+    "description": "A comprehensive bookmark manager and startpage with organized links to essential websites, search functionality, and productivity tools.",
+    "icon": "mdi:bookmark-multiple",
+    "created": "2024-01-15T14:00:00Z",
+    "modified": "2024-01-15T14:00:00Z",
+    "visit_count": 0,
+    "color": "#059669",
+    "category": "Productivity",
+    "tags": ["bookmarks", "startpage", "links", "productivity", "dashboard", "search"]
+}

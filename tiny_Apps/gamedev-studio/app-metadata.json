@@ -1,0 +1,11 @@
+{
+    "title": "PixelForge Studios",
+    "description": "A game development studio website showcasing indie games and development projects. Features multiple pages including portfolio, about, and contact information.",
+    "icon": "mdi:gamepad-variant",
+    "created": "2024-01-15T12:00:00Z",
+    "modified": "2024-01-15T12:00:00Z",
+    "visit_count": 0,
+    "color": "#8b5cf6",
+    "category": "Portfolio",
+    "tags": ["gamedev", "portfolio", "multi-page", "studio", "games"]
+}

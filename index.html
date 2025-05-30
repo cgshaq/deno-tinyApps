@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tiny Apps Hub</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://code.iconify.design/3/3.1.1/iconify.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>
+                <iconify-icon icon="mdi:apps" class="header-icon"></iconify-icon>
+                Tiny Apps Hub
+            </h1>
+            <p>Discover and launch your collection of tiny applications</p>
+        </header>
+
+        <main class="main">
+            <div id="loading" class="loading">
+                <iconify-icon icon="mdi:loading" class="spin"></iconify-icon>
+                Loading apps...
+            </div>
+
+            <div id="error" class="error" style="display: none;">
+                <iconify-icon icon="mdi:alert-circle"></iconify-icon>
+                <span id="error-message">Failed to load apps</span>
+            </div>
+
+            <div id="empty" class="empty" style="display: none;">
+                <iconify-icon icon="mdi:folder-open-outline"></iconify-icon>
+                <h3>No apps found</h3>
+                <p>Add some apps to the <code>tiny_Apps</code> folder to get started.</p>
+            </div>
+
+            <div id="apps-grid" class="apps-grid" style="display: none;">
+                <!-- Apps will be dynamically inserted here -->
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>
+                <iconify-icon icon="mdi:refresh" id="refresh-btn" class="refresh-btn"></iconify-icon>
+                <span id="app-count">0 apps</span> • 
+                Last updated: <span id="last-updated">Never</span>
+            </p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

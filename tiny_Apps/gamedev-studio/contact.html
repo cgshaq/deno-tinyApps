@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - PixelForge Studios</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://code.iconify.design/3/3.1.1/iconify.min.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <iconify-icon icon="mdi:gamepad-variant"></iconify-icon>
+                <span>PixelForge Studios</span>
+            </div>
+            <div class="nav-links">
+                <a href="/app/gamedev-studio">Home</a>
+                <a href="/app/gamedev-studio/about.html">About</a>
+                <a href="/app/gamedev-studio/games.html">Games</a>
+                <a href="/app/gamedev-studio/contact.html" class="active">Contact</a>
+            </div>
+            <div class="nav-actions">
+                <a href="/" class="hub-link">
+                    <iconify-icon icon="mdi:home"></iconify-icon>
+                    Hub
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <section class="page-header">
+            <div class="container">
+                <h1>Get In Touch</h1>
+                <p>We'd love to hear from you. Send us a message and we'll respond as soon as possible.</p>
+            </div>
+        </section>
+
+        <section class="contact-content">
+            <div class="container">
+                <div class="contact-grid">
+                    <div class="contact-info">
+                        <h2>Let's Connect</h2>
+                        <p>Whether you have questions about our games, want to join our team, or are interested in partnerships, we're here to help.</p>
+
+                        <div class="contact-methods">
+                            <div class="contact-method">
+                                <iconify-icon icon="mdi:email"></iconify-icon>
+                                <div>
+                                    <h3>Email Us</h3>
+                                    <p>hello@pixelforge.studio</p>
+                                    <p>support@pixelforge.studio</p>
+                                </div>
+                            </div>
+
+                            <div class="contact-method">
+                                <iconify-icon icon="mdi:discord"></iconify-icon>
+                                <div>
+                                    <h3>Join Our Discord</h3>
+                                    <p>Connect with our community and get direct access to our team.</p>
+                                    <a href="#" class="discord-link">Join Discord Server</a>
+                                </div>
+                            </div>
+
+                            <div class="contact-method">
+                                <iconify-icon icon="mdi:map-marker"></iconify-icon>
+                                <div>
+                                    <h3>Office Location</h3>
+                                    <p>123 Game Dev Street<br>
+                                    San Francisco, CA 94102<br>
+                                    United States</p>
+                                </div>
+                            </div>
+
+                            <div class="contact-method">
+                                <iconify-icon icon="mdi:phone"></iconify-icon>
+                                <div>
+                                    <h3>Phone</h3>
+                                    <p>+1 (555) 123-GAME</p>
+                                    <p class="note">Business hours: Mon-Fri 9AM-6PM PST</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="social-links">
+                            <h3>Follow Us</h3>
+                            <div class="social-grid">
+                                <a href="#" class="social-link">
+                                    <iconify-icon icon="mdi:twitter"></iconify-icon>
+                                    <span>@PixelForgeStudio</span>
+                                </a>
+                                <a href="#" class="social-link">
+                                    <iconify-icon icon="mdi:youtube"></iconify-icon>
+                                    <span>PixelForge Studios</span>
+                                </a>
+                                <a href="#" class="social-link">
+                                    <iconify-icon icon="mdi:instagram"></iconify-icon>
+                                    <span>@pixelforgestudio</span>
+                                </a>
+                                <a href="#" class="social-link">
+                                    <iconify-icon icon="mdi:linkedin"></iconify-icon>
+                                    <span>PixelForge Studios</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="contact-form-container">
+                        <form class="contact-form" id="contactForm">
+                            <h2>Send us a message</h2>
+                            
+                            <div class="form-group">
+                                <label for="name">Full Name *</label>
+                                <input type="text" id="name" name="name" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="email">Email Address *</label>
+                                <input type="email" id="email" name="email" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="subject">Subject *</label>
+                                <select id="subject" name="subject" required>
+                                    <option value="">Select a topic</option>
+                                    <option value="general">General Inquiry</option>
+                                    <option value="support">Game Support</option>
+                                    <option value="partnership">Partnership</option>
+                                    <option value="press">Press & Media</option>
+                                    <option value="careers">Careers</option>
+                                    <option value="feedback">Game Feedback</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="message">Message *</label>
+                                <textarea id="message" name="message" rows="6" required placeholder="Tell us how we can help you..."></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="newsletter" name="newsletter">
+                                    <span class="checkmark"></span>
+                                    Subscribe to our newsletter for game updates and news
+                                </label>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">
+                                <iconify-icon icon="mdi:send"></iconify-icon>
+                                Send Message
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="faq-section">
+            <div class="container">
+                <h2>Frequently Asked Questions</h2>
+                <div class="faq-grid">
+                    <div class="faq-item">
+                        <h3>How can I report a bug in your games?</h3>
+                        <p>Please email us at support@pixelforge.studio with details about the bug, including your platform and steps to reproduce the issue.</p>
+                    </div>
+                    <div class="faq-item">
+                        <h3>Are you hiring?</h3>
+                        <p>We're always looking for talented individuals. Check our careers page or send your portfolio to careers@pixelforge.studio.</p>
+                    </div>
+                    <div class="faq-item">
+                        <h3>Can I suggest ideas for games?</h3>
+                        <p>We love hearing from our community! Join our Discord server to share your ideas and connect with other players.</p>
+                    </div>
+                    <div class="faq-item">
+                        <h3>Do you offer refunds?</h3>
+                        <p>Refund policies depend on the platform where you purchased the game. Please refer to the respective store's refund policy.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <iconify-icon icon="mdi:gamepad-variant"></iconify-icon>
+                    <span>PixelForge Studios</span>
+                </div>
+                <div class="footer-links">
+                    <a href="/app/gamedev-studio">Home</a>
+                    <a href="/app/gamedev-studio/about.html">About</a>
+                    <a href="/app/gamedev-studio/games.html">Games</a>
+                    <a href="/app/gamedev-studio/contact.html">Contact</a>
+                </div>
+                <div class="footer-social">
+                    <a href="#" aria-label="Twitter">
+                        <iconify-icon icon="mdi:twitter"></iconify-icon>
+                    </a>
+                    <a href="#" aria-label="Discord">
+                        <iconify-icon icon="mdi:discord"></iconify-icon>
+                    </a>
+                    <a href="#" aria-label="YouTube">
+                        <iconify-icon icon="mdi:youtube"></iconify-icon>
+                    </a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 PixelForge Studios. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <style>
+        .page-header {
+            background: var(--gradient);
+            padding: 4rem 0 2rem 0;
+            text-align: center;
+        }
+
+        .page-header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: white;
+        }
+
+        .page-header p {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .contact-content {
+            padding: 4rem 0;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+        }
+
+        .contact-info h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: rgb(var(--text));
+        }
+
+        .contact-info > p {
+            color: rgb(var(--text-muted));
+            margin-bottom: 2rem;
+            line-height: 1.7;
+        }
+
+        .contact-methods {
+            margin-bottom: 3rem;
+        }
+
+        .contact-method {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid rgb(var(--border));
+        }
+
+        .contact-method:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .contact-method iconify-icon {
+            font-size: 2rem;
+            color: rgb(var(--primary));
+            flex-shrink: 0;
+            margin-top: 0.25rem;
+        }
+
+        .contact-method h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: rgb(var(--text));
+        }
+
+        .contact-method p {
+            color: rgb(var(--text-muted));
+            margin-bottom: 0.25rem;
+        }
+
+        .contact-method .note {
+            font-size: 0.875rem;
+            font-style: italic;
+        }
+
+        .discord-link {
+            color: rgb(var(--primary));
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .discord-link:hover {
+            text-decoration: underline;
+        }
+
+        .social-links h3 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            color: rgb(var(--text));
+        }
+
+        .social-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+
+        .social-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: rgb(var(--text-muted));
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: var(--radius);
+            transition: all 0.2s ease;
+            font-size: 0.875rem;
+        }
+
+        .social-link:hover {
+            background-color: rgb(var(--surface));
+            color: rgb(var(--primary));
+        }
+
+        .contact-form-container {
+            background-color: rgb(var(--surface));
+            padding: 2rem;
+            border-radius: var(--radius);
+            border: 1px solid rgb(var(--border));
+        }
+
+        .contact-form h2 {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            color: rgb(var(--text));
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: rgb(var(--text));
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid rgb(var(--border));
+            border-radius: var(--radius);
+            background-color: rgb(var(--background));
+            color: rgb(var(--text));
+            font-size: 0.875rem;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: rgb(var(--primary));
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .checkbox-label {
+            display: flex !important;
+            align-items: flex-start;
+            gap: 0.75rem;
+            cursor: pointer;
+            color: rgb(var(--text-muted)) !important;
+            font-weight: normal !important;
+        }
+
+        .checkbox-label input[type="checkbox"] {
+            width: auto !important;
+            margin: 0;
+        }
+
+        .faq-section {
+            padding: 4rem 0;
+            background-color: rgb(var(--surface));
+        }
+
+        .faq-section h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: rgb(var(--text));
+        }
+
+        .faq-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .faq-item {
+            background-color: rgb(var(--background));
+            padding: 2rem;
+            border-radius: var(--radius);
+            border: 1px solid rgb(var(--border));
+        }
+
+        .faq-item h3 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            color: rgb(var(--text));
+        }
+
+        .faq-item p {
+            color: rgb(var(--text-muted));
+            line-height: 1.6;
+        }
+
+        @media (max-width: 768px) {
+            .contact-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .page-header h1 {
+                font-size: 2rem;
+            }
+
+            .social-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-form-container {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+
+    <script>
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const name = formData.get('name');
+            const email = formData.get('email');
+            const subject = formData.get('subject');
+            const message = formData.get('message');
+            
+            if (!name || !email || !subject || !message) {
+                alert('Please fill in all required fields.');
+                return;
+            }
+            
+            // Simulate form submission
+            alert(`Thank you ${name}! Your message has been sent. We'll get back to you at ${email} soon.`);
+            this.reset();
+        });
+    </script>
+</body>
+</html>

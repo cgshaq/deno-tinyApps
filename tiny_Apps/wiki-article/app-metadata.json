@@ -1,0 +1,11 @@
+{
+    "title": "WikiTiny",
+    "description": "A tiny encyclopedia with articles on various topics. Features a clean, Wikipedia-inspired design for easy reading.",
+    "icon": "mdi:book-open-page-variant",
+    "created": "2024-01-15T10:00:00Z",
+    "modified": "2024-01-15T10:00:00Z",
+    "visit_count": 0,
+    "color": "#0969da",
+    "category": "Reference",
+    "tags": ["encyclopedia", "articles", "knowledge", "reference", "reading"]
+}

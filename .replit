@@ -1,0 +1,32 @@
+modules = ["go"]
+
+[nix]
+channel = "stable-24_05"
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Go App Hub Server"
+
+[[workflows.workflow]]
+name = "Go App Hub Server"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "go run main.go"
+waitForPort = 5000
+
+[deployment]
+run = ["sh", "-c", "go run main.go"]
+
+[[ports]]
+localPort = 5000
+externalPort = 80

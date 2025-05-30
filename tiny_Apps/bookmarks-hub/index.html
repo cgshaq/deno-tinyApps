@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuickLinks Hub - Your Digital Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://code.iconify.design/3/3.1.1/iconify.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="breadcrumb">
+                <a href="/">
+                    <iconify-icon icon="mdi:home"></iconify-icon>
+                    Hub
+                </a>
+                <iconify-icon icon="mdi:chevron-right"></iconify-icon>
+                <span>QuickLinks</span>
+            </div>
+            <h1>
+                <iconify-icon icon="mdi:bookmark-multiple"></iconify-icon>
+                QuickLinks Hub
+            </h1>
+            <p>Your centralized dashboard for quick access to essential websites and tools</p>
+        </header>
+
+        <div class="search-section">
+            <div class="search-box">
+                <iconify-icon icon="mdi:magnify"></iconify-icon>
+                <input type="text" id="searchInput" placeholder="Search the web or type a URL...">
+                <button type="button" id="searchBtn" class="search-btn">
+                    <iconify-icon icon="mdi:arrow-right"></iconify-icon>
+                </button>
+            </div>
+            <div class="search-engines">
+                <button class="engine-btn active" data-engine="google">
+                    <iconify-icon icon="mdi:google"></iconify-icon>
+                    Google
+                </button>
+                <button class="engine-btn" data-engine="duckduckgo">
+                    <iconify-icon icon="simple-icons:duckduckgo"></iconify-icon>
+                    DuckDuckGo
+                </button>
+                <button class="engine-btn" data-engine="bing">
+                    <iconify-icon icon="mdi:microsoft-bing"></iconify-icon>
+                    Bing
+                </button>
+            </div>
+        </div>
+
+        <main class="main">
+            <div class="bookmarks-grid">
+                <!-- Productivity & Work -->
+                <section class="bookmark-category">
+                    <h2>
+                        <iconify-icon icon="mdi:briefcase"></iconify-icon>
+                        Productivity & Work
+                    </h2>
+                    <div class="links-grid">
+                        <a href="https://gmail.com" class="bookmark-link" target="_blank">
+                            <iconify-icon icon="mdi:gmail"></iconify-icon>
+                            <span>Gmail</span>
+                        </a>
+                        <a href="https://calendar.google.com" class="bookmark-link" target="_blank">
+                            <iconify-icon icon="mdi:calendar"></iconify-icon>
+                            <span>Google Calendar</span>
+                        </a>
+                        <a href="https://drive.google.com" class="bookmark-link" target="_blank">
+                            <iconify-icon icon="mdi:google-drive"></iconify-icon>
+                            <span>Google Drive</span>
+                        </a>
+                        <a href="https://docs.google.com" class="bookmark-link" target="_blank">
+                            <iconify-icon icon="mdi:file-document"></iconify-icon>
+                            <span>Google Docs</span>
+                        </a>
+                        <a href="https://sheets.google.com" class="bookmark-link" target="_blank">
+                            <iconify-icon icon="mdi:table"></iconify-icon>
+                            <span>Google Sheets</span>
+                        </a>
+                        <a href="https://notion.so" class="bookmark-link" target="_blank">
+                            <iconify-icon icon="simple-icons:notion"></iconify-icon>
+                            <span>Notion</span>
+                        </a>
+                        <a href="https://trello.com" class="bookmark-link" target="_blank">
+                            <iconify-icon icon="mdi:trello"></iconify-icon>
+                            <span>Trello</span>
+                        </a>
+                        <a href="https://slack.com" class="bookmark-link" target="_blank">
+                            <iconify-icon icon="mdi:slack"></iconify-icon>
+                            <span>Slack</span>
+                        </a>
+                    </div>
+                </section>
+
+                <!-- Development -->
+                <section class="bookmark-category">
+                    <h2>
+                        <iconify-icon icon="mdi:code-tags"></iconify-icon>
+                        Development
+                    </h2>
+                    <div class="links-grid">
+                        <a href="https://github.com" class="bookmark-link" target="_blank">
+                            <iconify-icon icon="mdi:github"></iconify-icon>
+                            <span>GitHub</span>
+                        </a>
+                        <a href="https://stackoverflow.com" class="bookmark-link" target="_blank">
+                            <iconify-icon icon="mdi:stack-overflow"></iconify-icon>
+                            <span>Stack Overflow</span>
+                        </a>
+                        <a href="https://codepen.io" class="bookmark-link" target="_blank">
+                            <iconify-icon icon="mdi:codepen"></iconify-icon>
+                            <span>CodePen</span>
+                        </a>
+                        <a href="https://developer.mozilla.org" class="bookmark-link" target="_blank">
+                            <iconify-icon icon="mdi:firefox"></iconify-icon>
+                            <span>MDN Docs</span>
+                        </a>
+                        <a href="https://nodejs.org" class="bookmark-link" target="_blank">
+                            <iconify-icon icon="mdi:nodejs"></iconify-icon>
+                            <span>Node.js</span>
+                        </a>
+                        <a href="https://npmjs.com" class="bookmark-link" target="_blank">
+                            <iconify-icon icon="mdi:npm"></iconify-icon>
+                            <span>npm</span>
+                        </a>
+                        <a href="https://vercel.com" class="bookmark-link" target="_blank">
+                            <iconify-icon icon="simple-icons:vercel"></iconify-icon>
+                            <span>Vercel</span>
+                        </a>
+                        <a href="https://netlify.com" class="bookmark-link" target="_blank">
+                            <iconify-icon icon="simple-icons:netlify"></iconify-icon>
+                            <span>Netlify</span>
+                        </a>
+                    </div>
+                </section>
+
+                <!-- Design & Creativity -->
+                <section class="bookmark-category">
+                    <h2>
+                        <iconify-icon icon="mdi:palette"></iconify-icon>
+                        Design & Creativity
+                    </h2>
+                    <div class="links-grid">
+                        <a href="https://figma.com" class="bookmark-link" target="_blank">
+                            <iconify-icon icon="mdi:figma"></iconify-icon>
+                            <span>Figma</span>
+                        </a>
+                        <a href="https://dribbble.com" class="bookmark-link" target="_blank">
+                            <iconify-icon icon="mdi:dribbble"></iconify-icon>
+                            <span>Dribbble</span>
+                        </a>
+                        <a href="https://behance.net" class="bookmark-link" target="_blank">
+                            <iconify-icon icon="mdi:behance"></iconify-icon>
+                            <span>Behance</span>
+                        </a>
+                        <a href="https://unsplash.com" class="bookmark-link" target="_blank">
+                            <iconify-icon icon="mdi:camera"></iconify-icon>
+                            <span>Unsplash</span>
+                        </a>
+                        <a href="https://fontawesome.com" class="bookmark-link" target="_blank">
+                            <iconify-icon icon="mdi:font-awesome"></iconify-icon>
+                            <span>Font Awesome</span>
+                        </a>
+                        <a href="https://fonts.google.com" class="bookmark-link" target="_blank">
+                            <iconify-icon icon="mdi:format-font"></iconify-icon>
+                            <span>Google Fonts</span>
+                        </a>
+                        <a href="https://coolors.co" class="bookmark-link" target="_blank">
+                            <iconify-icon icon="mdi:palette-swatch"></iconify-icon>
+                            <span>Coolors</span>
+                        </a>
+                        <a href="https://canva.com" class="bookmark-link" target="_blank">
+                            <iconify-icon icon="simple-icons:canva"></iconify-icon>
+                            <span>Canva</span>
+                        </a>
+                    </div>
+                </section>
+
+                <!-- Learning & Reference -->
+                <section class="bookmark-category">
+                    <h2>
+                        <iconify-icon icon="mdi:school"></iconify-icon>
+                        Learning & Reference
+                    </h2>
+                    <div class="links-grid">
+                        <a href="https://wikipedia.org" class="bookmark-link" target="_blank">
+                            <iconify-icon icon="mdi:wikipedia"></iconify-icon>
+                            <span>Wikipedia</span>
+                        </a>
+                        <a href="https://youtube.com" class="bookmark-link" target="_blank">
+                            <iconify-icon icon="mdi:youtube"></iconify-icon>
+                            <span>YouTube</span>
+                        </a>
+                        <a href="https://coursera.org" class="bookmark-link" target="_blank">
+                            <iconify-icon icon="mdi:school"></iconify-icon>
+                            <span>Coursera</span>
+                        </a>
+                        <a href="https://udemy.com" class="bookmark-link" target="_blank">
+                            <iconify-icon icon="mdi:play-circle"></iconify-icon>
+                            <span>Udemy</span>
+                        </a>
+                        <a href="https://khanacademy.org" class="bookmark-link" target="_blank">
+                            <iconify-icon icon="mdi:book-open"></iconify-icon>
+                            <span>Khan Academy</span>
+                        </a>
+                        <a href="https://translate.google.com" class="bookmark-link" target="_blank">
+                            <iconify-icon icon="mdi:translate"></iconify-icon>
+                            <span>Google Translate</span>
+                        </a>
+                        <a href="https://wolframalpha.com" class="bookmark-link" target="_blank">
+                            <iconify-icon icon="mdi:calculator"></iconify-icon>
+                            <span>Wolfram Alpha</span>
+                        </a>
+                        <a href="https://reddit.com" class="bookmark-link" target="_blank">
+                            <iconify-icon icon="mdi:reddit"></iconify-icon>
+                            <span>Reddit</span>
+                        </a>
+                    </div>
+                </section>
+
+                <!-- Entertainment -->
+                <section class="bookmark-category">
+                    <h2>
+                        <iconify-icon icon="mdi:gamepad-variant"></iconify-icon>
+                        Entertainment
+                    </h2>
+                    <div class="links-grid">
+                        <a href="https://netflix.com" class="bookmark-link" target="_blank">
+                            <iconify-icon icon="mdi:netflix"></iconify-icon>
+                            <span>Netflix</span>
+                        </a>
+                        <a href="https://spotify.com" class="bookmark-link" target="_blank">
+                            <iconify-icon icon="mdi:spotify"></iconify-icon>
+                            <span>Spotify</span>
+                        </a>
+                        <a href="https://twitch.tv" class="bookmark-link" target="_blank">
+                            <iconify-icon icon="mdi:twitch"></iconify-icon>
+                            <span>Twitch</span>
+                        </a>
+                        <a href="https://discord.com" class="bookmark-link" target="_blank">
+                            <iconify-icon icon="mdi:discord"></iconify-icon>
+                            <span>Discord</span>
+                        </a>
+                        <a href="https://steam.com" class="bookmark-link" target="_blank">
+                            <iconify-icon icon="mdi:steam"></iconify-icon>
+                            <span>Steam</span>
+                        </a>
+                        <a href="https://hulu.com" class="bookmark-link" target="_blank">
+                            <iconify-icon icon="mdi:television"></iconify-icon>
+                            <span>Hulu</span>
+                        </a>
+                        <a href="https://prime.amazon.com" class="bookmark-link" target="_blank">
+                            <iconify-icon icon="mdi:amazon"></iconify-icon>
+                            <span>Prime Video</span>
+                        </a>
+                        <a href="https://goodreads.com" class="bookmark-link" target="_blank">
+                            <iconify-icon icon="mdi:book"></iconify-icon>
+                            <span>Goodreads</span>
+                        </a>
+                    </div>
+                </section>
+
+                <!-- Tools & Utilities -->
+                <section class="bookmark-category">
+                    <h2>
+                        <iconify-icon icon="mdi:tools"></iconify-icon>
+                        Tools & Utilities
+                    </h2>
+                    <div class="links-grid">
+                        <a href="https://weather.com" class="bookmark-link" target="_blank">
+                            <iconify-icon icon="mdi:weather-cloudy"></iconify-icon>
+                            <span>Weather.com</span>
+                        </a>
+                        <a href="https://maps.google.com" class="bookmark-link" target="_blank">
+                            <iconify-icon icon="mdi:map"></iconify-icon>
+                            <span>Google Maps</span>
+                        </a>
+                        <a href="https://speedtest.net" class="bookmark-link" target="_blank">
+                            <iconify-icon icon="mdi:speedometer"></iconify-icon>
+                            <span>Speedtest</span>
+                        </a>
+                        <a href="https://dropbox.com" class="bookmark-link" target="_blank">
+                            <iconify-icon icon="mdi:dropbox"></iconify-icon>
+                            <span>Dropbox</span>
+                        </a>
+                        <a href="https://1password.com" class="bookmark-link" target="_blank">
+                            <iconify-icon icon="mdi:key"></iconify-icon>
+                            <span>1Password</span>
+                        </a>
+                        <a href="https://zoom.us" class="bookmark-link" target="_blank">
+                            <iconify-icon icon="mdi:video"></iconify-icon>
+                            <span>Zoom</span>
+                        </a>
+                        <a href="https://paypal.com" class="bookmark-link" target="_blank">
+                            <iconify-icon icon="mdi:paypal"></iconify-icon>
+                            <span>PayPal</span>
+                        </a>
+                        <a href="https://amazon.com" class="bookmark-link" target="_blank">
+                            <iconify-icon icon="mdi:amazon"></iconify-icon>
+                            <span>Amazon</span>
+                        </a>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <div class="quick-stats">
+                <span id="currentTime"></span>
+                <span>•</span>
+                <span id="bookmarkCount">48 bookmarks</span>
+                <span>•</span>
+                <span>6 categories</span>
+            </div>
+            <p>QuickLinks Hub - Your digital dashboard for productivity</p>
+        </footer>
+    </div>
+
+    <script>
+        class QuickLinksHub {
+            constructor() {
+                this.currentEngine = 'google';
+                this.searchEngines = {
+                    google: 'https://www.google.com/search?q=',
+                    duckduckgo: 'https://duckduckgo.com/?q=',
+                    bing: 'https://www.bing.com/search?q='
+                };
+                this.init();
+            }
+
+            init() {
+                this.bindEvents();
+                this.updateTime();
+                this.startClock();
+            }
+
+            bindEvents() {
+                // Search functionality
+                const searchInput = document.getElementById('searchInput');
+                const searchBtn = document.getElementById('searchBtn');
+                
+                searchBtn.addEventListener('click', () => this.performSearch());
+                searchInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        this.performSearch();
+                    }
+                });
+
+                // Search engine switching
+                document.querySelectorAll('.engine-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        this.switchSearchEngine(e.target.closest('.engine-btn').dataset.engine);
+                    });
+                });
+
+                // Focus search input on page load
+                searchInput.focus();
+
+                // Keyboard shortcuts
+                document.addEventListener('keydown', (e) => {
+                    // Focus search with Ctrl/Cmd + K
+                    if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                        e.preventDefault();
+                        searchInput.focus();
+                        searchInput.select();
+                    }
+                });
+            }
+
+            performSearch() {
+                const query = document.getElementById('searchInput').value.trim();
+                if (!query) return;
+
+                // Check if it's a URL
+                if (this.isValidUrl(query)) {
+                    window.open(query.startsWith('http') ? query : `https://${query}`, '_blank');
+                } else {
+                    // Perform search
+                    const searchUrl = this.searchEngines[this.currentEngine] + encodeURIComponent(query);
+                    window.open(searchUrl, '_blank');
+                }
+
+                // Clear search input
+                document.getElementById('searchInput').value = '';
+            }
+
+            isValidUrl(string) {
+                try {
+                    // Check for domain-like patterns
+                    if (string.includes('.') && !string.includes(' ')) {
+                        return true;
+                    }
+                    new URL(string);
+                    return true;
+                } catch (_) {
+                    return false;
+                }
+            }
+
+            switchSearchEngine(engine) {
+                this.currentEngine = engine;
+                
+                // Update UI
+                document.querySelectorAll('.engine-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                document.querySelector(`[data-engine="${engine}"]`).classList.add('active');
+
+                // Update placeholder
+                const placeholders = {
+                    google: 'Search Google or type a URL...',
+                    duckduckgo: 'Search DuckDuckGo or type a URL...',
+                    bing: 'Search Bing or type a URL...'
+                };
+                document.getElementById('searchInput').placeholder = placeholders[engine];
+            }
+
+            updateTime() {
+                const now = new Date();
+                const timeString = now.toLocaleTimeString([], { 
+                    hour: '2-digit', 
+                    minute: '2-digit',
+                    hour12: true 
+                });
+                document.getElementById('currentTime').textContent = timeString;
+            }
+
+            startClock() {
+                setInterval(() => this.updateTime(), 1000);
+            }
+        }
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', () => {
+            new QuickLinksHub();
+        });
+    </script>
+</body>
+</html>
