@@ -1,0 +1,460 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tiny Apps Hub</title>
+
+    <!-- daisyui for styles -->
+    <!-- <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" /> -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- <link href="https://cdn.jsdelivr.net/npm/daisyui@5/themes.css" rel="stylesheet" /> -->
+
+    <!-- Iconify for icons (deferred so it runs after DOM parsing) -->
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/iconify/3.1.1/iconify.min.js"></script>
+
+    <!-- junicode font -->
+    <link href="https://fonts.cdnfonts.com/css/junicode" rel="stylesheet" />
+    <style>
+        /* CSS Custom Properties */
+        :root {
+            --primary: 220 90% 56%;
+            /* #1d4ed8 */
+            --primary-light: 220 90% 96%;
+            /* #f0f9ff */
+            --background: 210 11% 98%;
+            /* #f8fafc */
+            --surface: 0 0% 100%;
+            /* #ffffff */
+            --border: 220 13% 91%;
+            /* #e2e8f0 */
+            --text: 220 39% 11%;
+            /* #0f172a */
+            --text-muted: 220 9% 46%;
+            /* #64748b */
+            --success: 142 71% 45%;
+            /* #16a34a */
+            --warning: 38 92% 50%;
+            /* #f59e0b */
+            --error: 0 84% 60%;
+            /* #ef4444 */
+            --radius: 8px;
+            --shadow:
+                0 1px 3px 0 rgb(0 0 0 / 0.1),
+                0 1px 2px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg:
+                0 10px 15px -3px rgb(0 0 0 / 0.1),
+                0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+
+        /* Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            /* font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; */
+            font-family: "Junicode", sans-serif;
+            background-color: hsl(var(--background));
+            color: hsl(var(--text));
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: hsl(var(--primary));
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .header-icon {
+            font-size: 3rem;
+        }
+
+        .header p {
+            color: hsl(var(--text-muted));
+            font-size: 1.1rem;
+        }
+
+        /* Main Content */
+        .main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Loading State */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 3rem;
+            color: hsl(var(--text-muted));
+            font-size: 1.1rem;
+        }
+
+        .spin {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Error State */
+        .error {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 2rem;
+            background-color: hsl(var(--error) / 0.1);
+            border: 1px solid hsl(var(--error) / 0.2);
+            border-radius: var(--radius);
+            color: hsl(var(--error));
+            font-weight: 500;
+        }
+
+        /* Empty State */
+        .empty {
+            text-align: center;
+            padding: 3rem;
+            color: hsl(var(--text-muted));
+        }
+
+        .empty iconify-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .empty h3 {
+            margin-bottom: 0.5rem;
+            color: hsl(var(--text));
+        }
+
+        .empty code {
+            background-color: hsl(var(--border));
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
+        }
+
+        /* Apps Grid */
+        .apps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            padding: 1rem 0;
+        }
+
+        .app-card {
+            background-color: hsl(var(--surface));
+            border: 1px solid hsl(var(--border));
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            transition: all 0.2s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .app-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+            border-color: hsl(var(--primary) / 0.3);
+        }
+
+        .app-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .app-icon {
+            font-size: 2rem;
+            flex-shrink: 0;
+        }
+
+        .app-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: hsl(var(--text));
+            margin: 0;
+        }
+
+        .app-description {
+            color: hsl(var(--text-muted));
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .app-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.875rem;
+            color: hsl(var(--text-muted));
+        }
+
+        .app-category {
+            background-color: hsl(var(--primary-light));
+            color: hsl(var(--primary));
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+
+        .app-visits {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid hsl(var(--border));
+            text-align: center;
+            color: hsl(var(--text-muted));
+            font-size: 0.875rem;
+        }
+
+        .refresh-btn {
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            margin-right: 0.5rem;
+        }
+
+        .refresh-btn:hover {
+            transform: rotate(180deg);
+            color: hsl(var(--primary));
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .apps-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .app-meta {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app" class="container">
+        <header id="header" class="header">
+            <h1>
+                tiny_Apps
+            </h1>
+        </header>
+
+        <main id="main" class="main">
+            <div id="loading" class="loading">
+                <span class="iconify h-5 w-5 mr-2 spin" data-icon="mdi:loading" data-inline="false"></span>
+                Loading apps...
+            </div>
+
+            <div id="error" class="error" style="display: none">
+                <span class="iconify h-5 w-5 mr-2" data-icon="mdi:alert-circle" data-inline="false"></span>
+                <span id="error-message">Failed to load apps</span>
+            </div>
+
+            <div id="empty" class="empty" style="display: none">
+                <span class="iconify h-5 w-5 mr-2" data-icon="mdi:folder-open-outline" data-inline="false"></span>
+                <h3>No apps found</h3>
+                <p>
+                    Add some apps to the <code>tiny_Apps</code> folder to
+                    get started.
+                </p>
+            </div>
+
+            <div id="apps-grid" class="apps-grid" style="display: none">
+                <!-- Apps will be dynamically inserted here -->
+            </div>
+        </main>
+
+        <footer id="footer" class="footer">
+            <p>
+                <span class="iconify h-5 w-5 mr-2" data-icon="mdi:refresh" data-inline="false" id="refresh-btn"></span>
+                <span id="app-count">0 apps</span> • Last updated:
+                <span id="last-updated">Never</span>
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        class AppHub {
+            constructor() {
+                this.apps = [];
+                this.lastUpdated = null;
+                this.init();
+            }
+
+            async init() {
+                this.bindEvents();
+                await this.loadApps();
+            }
+
+            bindEvents() {
+                document
+                    .getElementById("refresh-btn")
+                    .addEventListener("click", () => this.loadApps());
+            }
+
+            async loadApps() {
+                this.showLoading();
+                try {
+                    const res = await fetch("/api/apps");
+                    if (!res.ok)
+                        throw new Error(
+                            `HTTP ${res.status}: ${res.statusText}`,
+                        );
+                    this.apps = await res.json();
+                    this.lastUpdated = new Date();
+                    this.renderApps();
+                    this.updateFooter();
+                } catch (e) {
+                    console.error(e);
+                    this.showError(e.message);
+                }
+            }
+
+            showLoading() {
+                this.hideAllStates();
+                document.getElementById("loading").style.display = "flex";
+            }
+
+            showError(msg) {
+                this.hideAllStates();
+                const err = document.getElementById("error");
+                document.getElementById("error-message").textContent = msg;
+                err.style.display = "flex";
+            }
+
+            showEmpty() {
+                this.hideAllStates();
+                document.getElementById("empty").style.display = "block";
+            }
+
+            hideAllStates() {
+                ["loading", "error", "empty", "apps-grid"].forEach((id) => {
+                    document.getElementById(id).style.display = "none";
+                });
+            }
+
+            renderApps() {
+                if (!this.apps.length) {
+                    this.showEmpty();
+                    return;
+                }
+                this.hideAllStates();
+                const grid = document.getElementById("apps-grid");
+                grid.style.display = "grid";
+
+                const sorted = this.apps
+                    .slice()
+                    .sort((a, b) => a.title.localeCompare(b.title));
+                grid.innerHTML = sorted
+                    .map((app) => this.renderAppCard(app))
+                    .join("");
+
+                // scan newly added <iconify-icon> and <span.iconify> tags
+                if (window.Iconify) Iconify.scan();
+            }
+
+            renderAppCard(app) {
+                const visits =
+                    app.visit_count === 1
+                        ? "1 visit"
+                        : `${app.visit_count} visits`;
+                return `
+                    <a id="app-card" href="/app/${app.path}" class="app-card" style="border-left:4px solid ${app.color}">
+                        <div class="app-header">
+                            <span class="iconify h-5 w-5 mr-2" data-icon="${app.icon}" data-inline="false"></span>
+                            <h3 class="app-title">${this.escape(app.title)}</h3>
+                        </div>
+                        <p class="app-description">${this.escape(app.description)}</p>
+                        <div class="app-meta">
+                            <span class="app-category">${this.escape(app.category)}</span>
+                            <span class="app-visits">
+                                <span class="iconify h-5 w-5 mr-2" data-icon="mdi:eye" data-inline="false"></span>
+                                ${visits}
+                            </span>
+                        </div>
+                    </a>
+                `;
+            }
+
+            updateFooter() {
+                const count = this.apps.length;
+                document.getElementById("app-count").textContent =
+                    count === 1 ? "1 app" : `${count} apps`;
+                document.getElementById("last-updated").textContent =
+                    this.lastUpdated.toLocaleTimeString();
+            }
+
+            escape(str) {
+                const d = document.createElement("div");
+                d.textContent = str;
+                return d.innerHTML;
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            new AppHub();
+            // initial scan for header/loading icons
+            if (window.Iconify) Iconify.scan();
+        });
+    </script>
+</body>
+
+</html>
