@@ -175,8 +175,3 @@ func (ndb *NotesDatabase) Delete(id int) error {
 
 	return nil
 }
-
-// Close closes the database connection
-func (ndb *NotesDatabase) Close() error {
-	return ndb.db.Close()
-}
