@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -12,6 +13,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	_ "github.com/lib/pq"
 )
 
 type AppMetadata struct {
@@ -27,10 +30,186 @@ type AppMetadata struct {
 	Path        string    `json:"path"`
 }
 
+type NotesRecord struct {
+	ID          int       `json:"id"`
+	NoteTitle   string    `json:"note_title"`
+	NoteContent string    `json:"note_content"`
+	CreatedAt   time.Time `json:"created_at"`
+	UpdatedAt   time.Time `json:"updated_at"`
+}
+
+type NotesDatabase struct {
+	db *sql.DB
+}
+
 type AppHub struct {
 	apps       map[string]*AppMetadata
 	appsFolder string
 	notesDB    *NotesDatabase
+}
+
+func NewNotesDatabase() (*NotesDatabase, error) {
+	databaseURL := os.Getenv("DATABASE_URL")
+	if databaseURL == "" {
+		return nil, fmt.Errorf("DATABASE_URL environment variable not set")
+	}
+
+	db, err := sql.Open("postgres", databaseURL)
+	if err != nil {
+		return nil, fmt.Errorf("failed to open database: %v", err)
+	}
+
+	if err := db.Ping(); err != nil {
+		return nil, fmt.Errorf("failed to connect to database: %v", err)
+	}
+
+	notesDB := &NotesDatabase{db: db}
+	
+	if err := notesDB.initSchema(); err != nil {
+		return nil, fmt.Errorf("failed to initialize schema: %v", err)
+	}
+
+	return notesDB, nil
+}
+
+func (ndb *NotesDatabase) initSchema() error {
+	query := `
+	CREATE TABLE IF NOT EXISTS notes_records (
+		id SERIAL PRIMARY KEY,
+		note_title VARCHAR(255) NOT NULL,
+		note_content TEXT NOT NULL,
+		created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+		updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+	);
+
+	CREATE INDEX IF NOT EXISTS idx_notes_records_created_at ON notes_records(created_at DESC);
+	`
+
+	_, err := ndb.db.Exec(query)
+	if err != nil {
+		return fmt.Errorf("failed to create schema: %v", err)
+	}
+
+	log.Println("Database schema initialized successfully")
+	return nil
+}
+
+func (ndb *NotesDatabase) GetAll() ([]*NotesRecord, error) {
+	query := `
+	SELECT id, note_title, note_content, created_at, updated_at 
+	FROM notes_records 
+	ORDER BY updated_at DESC
+	`
+
+	rows, err := ndb.db.Query(query)
+	if err != nil {
+		return nil, fmt.Errorf("failed to query notes: %v", err)
+	}
+	defer rows.Close()
+
+	var notes []*NotesRecord
+	for rows.Next() {
+		note := &NotesRecord{}
+		err := rows.Scan(&note.ID, &note.NoteTitle, &note.NoteContent, &note.CreatedAt, &note.UpdatedAt)
+		if err != nil {
+			return nil, fmt.Errorf("failed to scan note: %v", err)
+		}
+		notes = append(notes, note)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, fmt.Errorf("error iterating rows: %v", err)
+	}
+
+	return notes, nil
+}
+
+func (ndb *NotesDatabase) GetByID(id int) (*NotesRecord, error) {
+	query := `
+	SELECT id, note_title, note_content, created_at, updated_at 
+	FROM notes_records 
+	WHERE id = $1
+	`
+
+	note := &NotesRecord{}
+	err := ndb.db.QueryRow(query, id).Scan(
+		&note.ID, &note.NoteTitle, &note.NoteContent, &note.CreatedAt, &note.UpdatedAt,
+	)
+
+	if err == sql.ErrNoRows {
+		return nil, fmt.Errorf("note with ID %d not found", id)
+	}
+	if err != nil {
+		return nil, fmt.Errorf("failed to get note: %v", err)
+	}
+
+	return note, nil
+}
+
+func (ndb *NotesDatabase) Create(noteTitle, noteContent string) (*NotesRecord, error) {
+	query := `
+	INSERT INTO notes_records (note_title, note_content, created_at, updated_at)
+	VALUES ($1, $2, NOW(), NOW())
+	RETURNING id, note_title, note_content, created_at, updated_at
+	`
+
+	note := &NotesRecord{}
+	err := ndb.db.QueryRow(query, noteTitle, noteContent).Scan(
+		&note.ID, &note.NoteTitle, &note.NoteContent, &note.CreatedAt, &note.UpdatedAt,
+	)
+
+	if err != nil {
+		return nil, fmt.Errorf("failed to create note: %v", err)
+	}
+
+	return note, nil
+}
+
+func (ndb *NotesDatabase) Update(id int, noteTitle, noteContent string) (*NotesRecord, error) {
+	query := `
+	UPDATE notes_records 
+	SET note_title = $1, note_content = $2, updated_at = NOW()
+	WHERE id = $3
+	RETURNING id, note_title, note_content, created_at, updated_at
+	`
+
+	note := &NotesRecord{}
+	err := ndb.db.QueryRow(query, noteTitle, noteContent, id).Scan(
+		&note.ID, &note.NoteTitle, &note.NoteContent, &note.CreatedAt, &note.UpdatedAt,
+	)
+
+	if err == sql.ErrNoRows {
+		return nil, fmt.Errorf("note with ID %d not found", id)
+	}
+	if err != nil {
+		return nil, fmt.Errorf("failed to update note: %v", err)
+	}
+
+	return note, nil
+}
+
+func (ndb *NotesDatabase) Delete(id int) error {
+	query := `DELETE FROM notes_records WHERE id = $1`
+
+	result, err := ndb.db.Exec(query, id)
+	if err != nil {
+		return fmt.Errorf("failed to delete note: %v", err)
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("failed to get rows affected: %v", err)
+	}
+
+	if rowsAffected == 0 {
+		return fmt.Errorf("note with ID %d not found", id)
+	}
+
+	return nil
+}
+
+func (ndb *NotesDatabase) Close() error {
+	return ndb.db.Close()
 }
 
 func NewAppHub() *AppHub {
@@ -46,12 +225,9 @@ func NewAppHub() *AppHub {
 	}
 }
 
-// scanApps discovers all apps in the tiny_Apps directory
 func (hub *AppHub) scanApps() error {
-	// Clear existing apps
 	hub.apps = make(map[string]*AppMetadata)
 
-	// Check if tiny_Apps directory exists
 	if _, err := os.Stat(hub.appsFolder); os.IsNotExist(err) {
 		log.Printf("Creating %s directory", hub.appsFolder)
 		if err := os.MkdirAll(hub.appsFolder, 0755); err != nil {
@@ -60,18 +236,15 @@ func (hub *AppHub) scanApps() error {
 		return nil
 	}
 
-	// Walk through tiny_Apps directory
 	err := filepath.WalkDir(hub.appsFolder, func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
 			return err
 		}
 
-		// Skip the root tiny_Apps directory
 		if path == hub.appsFolder {
 			return nil
 		}
 
-		// Only process directories that are direct children of tiny_Apps
 		relPath, _ := filepath.Rel(hub.appsFolder, path)
 		if strings.Contains(relPath, string(filepath.Separator)) {
 			return nil
@@ -82,11 +255,9 @@ func (hub *AppHub) scanApps() error {
 			indexPath := filepath.Join(appPath, "index.html")
 			metadataPath := filepath.Join(appPath, "app-metadata.json")
 
-			// Check if index.html exists
 			if _, err := os.Stat(indexPath); err == nil {
 				appName := filepath.Base(appPath)
 				
-				// Create default metadata
 				metadata := &AppMetadata{
 					Title:       appName,
 					Description: "A tiny app",
@@ -100,14 +271,12 @@ func (hub *AppHub) scanApps() error {
 					Path:        appName,
 				}
 
-				// Try to load metadata from JSON file
 				if metadataBytes, err := os.ReadFile(metadataPath); err == nil {
 					if err := json.Unmarshal(metadataBytes, metadata); err != nil {
 						log.Printf("Warning: Failed to parse metadata for %s: %v", appName, err)
 					}
 				}
 
-				// Ensure path is set correctly
 				metadata.Path = appName
 				hub.apps[appName] = metadata
 				log.Printf("Discovered app: %s", appName)
@@ -119,9 +288,7 @@ func (hub *AppHub) scanApps() error {
 	return err
 }
 
-// handleAppsAPI returns JSON list of all discovered apps
 func (hub *AppHub) handleAppsAPI(w http.ResponseWriter, r *http.Request) {
-	// Rescan apps to pick up any new additions
 	if err := hub.scanApps(); err != nil {
 		http.Error(w, fmt.Sprintf("Failed to scan apps: %v", err), http.StatusInternalServerError)
 		return
@@ -141,15 +308,12 @@ func (hub *AppHub) handleAppsAPI(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// handleAppVisit increments visit count and serves the app with proper base URL
 func (hub *AppHub) handleAppVisit(w http.ResponseWriter, r *http.Request) {
 	appName := strings.TrimPrefix(r.URL.Path, "/app/")
 	if app, exists := hub.apps[appName]; exists {
 		app.VisitCount++
-		// In a real application, you might want to persist this to storage
 	}
 	
-	// Read the app's index.html
 	appPath := filepath.Join(hub.appsFolder, appName, "index.html")
 	content, err := os.ReadFile(appPath)
 	if err != nil {
@@ -157,11 +321,9 @@ func (hub *AppHub) handleAppVisit(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	
-	// Inject base tag to fix relative paths
 	htmlContent := string(content)
 	baseTag := fmt.Sprintf(`<base href="/app/%s/">`, appName)
 	
-	// Insert base tag after <head>
 	if strings.Contains(htmlContent, "<head>") {
 		htmlContent = strings.Replace(htmlContent, "<head>", "<head>\n    "+baseTag, 1)
 	}
@@ -170,9 +332,7 @@ func (hub *AppHub) handleAppVisit(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(htmlContent))
 }
 
-// handleAppStatic serves static files for apps
 func (hub *AppHub) handleAppStatic(w http.ResponseWriter, r *http.Request) {
-	// Extract app name and file path
 	path := strings.TrimPrefix(r.URL.Path, "/app/")
 	parts := strings.SplitN(path, "/", 2)
 	
@@ -184,22 +344,18 @@ func (hub *AppHub) handleAppStatic(w http.ResponseWriter, r *http.Request) {
 	appName := parts[0]
 	filePath := parts[1]
 
-	// Verify app exists
 	if _, exists := hub.apps[appName]; !exists {
 		http.NotFound(w, r)
 		return
 	}
 
-	// Serve the static file
 	fullPath := filepath.Join(hub.appsFolder, appName, filePath)
 	
-	// Security check: ensure the path is within the app directory
 	if !strings.HasPrefix(filepath.Clean(fullPath), filepath.Clean(filepath.Join(hub.appsFolder, appName))) {
 		http.Error(w, "Access denied", http.StatusForbidden)
 		return
 	}
 
-	// Set correct MIME type based on file extension
 	ext := filepath.Ext(filePath)
 	switch ext {
 	case ".css":
@@ -225,7 +381,6 @@ func (hub *AppHub) handleAppStatic(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, fullPath)
 }
 
-// handleNotesAPI handles all notes API requests
 func (hub *AppHub) handleNotesAPI(w http.ResponseWriter, r *http.Request) {
 	if hub.notesDB == nil {
 		http.Error(w, "Notes database not available", http.StatusServiceUnavailable)
@@ -247,7 +402,6 @@ func (hub *AppHub) handleNotesAPI(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
 		if path == "" || path == "/" {
-			// Get all notes
 			notes, err := hub.notesDB.GetAll()
 			if err != nil {
 				http.Error(w, "Failed to fetch notes: "+err.Error(), http.StatusInternalServerError)
@@ -255,7 +409,6 @@ func (hub *AppHub) handleNotesAPI(w http.ResponseWriter, r *http.Request) {
 			}
 			json.NewEncoder(w).Encode(notes)
 		} else {
-			// Get specific note by ID
 			idStr := strings.TrimPrefix(path, "/")
 			id, err := strconv.Atoi(idStr)
 			if err != nil {
@@ -277,7 +430,6 @@ func (hub *AppHub) handleNotesAPI(w http.ResponseWriter, r *http.Request) {
 		}
 		
 	case "POST":
-		// Create new note
 		body, err := io.ReadAll(r.Body)
 		if err != nil {
 			http.Error(w, "Failed to read request body", http.StatusBadRequest)
@@ -309,7 +461,6 @@ func (hub *AppHub) handleNotesAPI(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(note)
 		
 	case "PUT":
-		// Update existing note
 		idStr := strings.TrimPrefix(path, "/")
 		id, err := strconv.Atoi(idStr)
 		if err != nil {
@@ -351,7 +502,6 @@ func (hub *AppHub) handleNotesAPI(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(note)
 		
 	case "DELETE":
-		// Delete note
 		idStr := strings.TrimPrefix(path, "/")
 		id, err := strconv.Atoi(idStr)
 		if err != nil {
@@ -379,30 +529,24 @@ func (hub *AppHub) handleNotesAPI(w http.ResponseWriter, r *http.Request) {
 func main() {
 	hub := NewAppHub()
 
-	// Initial scan of apps
 	if err := hub.scanApps(); err != nil {
 		log.Printf("Warning: Failed to scan apps: %v", err)
 	}
 
-	// Routes
 	http.HandleFunc("/api/apps", hub.handleAppsAPI)
 	http.HandleFunc("/api/notes", hub.handleNotesAPI)
 	http.HandleFunc("/api/notes/", hub.handleNotesAPI)
 	
-	// Handle app routing
 	http.HandleFunc("/app/", func(w http.ResponseWriter, r *http.Request) {
 		path := strings.TrimPrefix(r.URL.Path, "/app/")
 		
-		// If path contains a slash, it's a static file request
 		if strings.Contains(path, "/") {
 			hub.handleAppStatic(w, r)
 		} else {
-			// It's an app visit request - serve index.html
 			hub.handleAppVisit(w, r)
 		}
 	})
 
-	// Serve main hub files
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path == "/" {
 			http.ServeFile(w, r, "index.html")
