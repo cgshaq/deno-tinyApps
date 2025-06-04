@@ -290,16 +290,14 @@
 </head>
 
 <body>
-    <div class="container">
-        <header class="header">
+    <div id="app" class="container">
+        <header id="header" class="header">
             <h1>
-                <span class="iconify h-5 w-5 mr-2" data-icon="mdi:apps" data-inline="false"></span>
-                Tiny Apps Hub
+                tiny_Apps
             </h1>
-            <p>Discover and launch your collection of tiny applications</p>
         </header>
 
-        <main class="main">
+        <main id="main" class="main">
             <div id="loading" class="loading">
                 <span class="iconify h-5 w-5 mr-2 spin" data-icon="mdi:loading" data-inline="false"></span>
                 Loading apps...
@@ -324,7 +322,7 @@
             </div>
         </main>
 
-        <footer class="footer">
+        <footer id="footer" class="footer">
             <p>
                 <span class="iconify h-5 w-5 mr-2" data-icon="mdi:refresh" data-inline="false" id="refresh-btn"></span>
                 <span id="app-count">0 apps</span> • Last updated:
@@ -419,7 +417,7 @@
                         ? "1 visit"
                         : `${app.visit_count} visits`;
                 return `
-                    <a href="/app/${app.path}" class="app-card" style="border-left:4px solid ${app.color}">
+                    <a id="app-card" href="/app/${app.path}" class="app-card" style="border-left:4px solid ${app.color}">
                         <div class="app-header">
                             <span class="iconify h-5 w-5 mr-2" data-icon="${app.icon}" data-inline="false"></span>
                             <h3 class="app-title">${this.escape(app.title)}</h3>
