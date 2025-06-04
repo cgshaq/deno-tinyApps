@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📝 Notes</h1>
+            <button id="new-note-btn" class="btn btn-primary">+ New Note</button>
+        </header>
+
+        <div id="notes-container" class="notes-grid">
+            <!-- Notes will be loaded here -->
+        </div>
+
+        <!-- Modal for creating/editing notes -->
+        <div id="note-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="modal-title">New Note</h2>
+                    <button id="close-modal" class="close-btn">&times;</button>
+                </div>
+                <form id="note-form">
+                    <input type="hidden" id="note-id">
+                    <div class="form-group">
+                        <label for="note-title">Title:</label>
+                        <input type="text" id="note-title" name="note_title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="note-content">Content:</label>
+                        <textarea id="note-content" name="note_content" rows="10" required></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Save Note</button>
+                        <button type="button" id="cancel-btn" class="btn btn-secondary">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Loading indicator -->
+        <div id="loading" class="loading hidden">
+            <div class="spinner"></div>
+            <p>Loading notes...</p>
+        </div>
+
+        <!-- Empty state -->
+        <div id="empty-state" class="empty-state hidden">
+            <h3>No notes yet</h3>
+            <p>Create your first note to get started!</p>
+            <button class="btn btn-primary" onclick="openNoteModal()">Create Note</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

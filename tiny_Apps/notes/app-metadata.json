@@ -1,0 +1,8 @@
+{
+    "title": "Notes",
+    "description": "Simple note-taking app with database storage",
+    "icon": "mdi:note-text",
+    "color": "#3498db",
+    "category": "Productivity",
+    "tags": ["notes", "writing", "productivity", "database"]
+}

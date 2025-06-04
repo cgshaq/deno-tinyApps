@@ -3,12 +3,15 @@ package main
 import (
         "encoding/json"
         "fmt"
+        "io"
         "io/fs"
         "log"
         "net/http"
         "os"
         "path/filepath"
+        "strconv"
         "strings"
+        "sync"
         "time"
 )
 
@@ -25,15 +28,171 @@ type AppMetadata struct {
         Path        string    `json:"path"`
 }
 
+// NotesRecord represents a note in the database
+type NotesRecord struct {
+        ID          int       `json:"id"`
+        NoteTitle   string    `json:"note_title"`
+        NoteContent string    `json:"note_content"`
+        CreatedAt   time.Time `json:"created_at"`
+        UpdatedAt   time.Time `json:"updated_at"`
+}
+
+// NotesDatabase manages the notes storage
+type NotesDatabase struct {
+        records    map[int]*NotesRecord
+        nextID     int
+        mutex      sync.RWMutex
+        dataFile   string
+}
+
 type AppHub struct {
         apps       map[string]*AppMetadata
         appsFolder string
+        notesDB    *NotesDatabase
+}
+
+// NewNotesDatabase creates a new notes database instance
+func NewNotesDatabase(dataFile string) *NotesDatabase {
+        db := &NotesDatabase{
+                records:  make(map[int]*NotesRecord),
+                nextID:   1,
+                dataFile: dataFile,
+        }
+        db.loadFromFile()
+        return db
+}
+
+// loadFromFile loads notes from the JSON file
+func (db *NotesDatabase) loadFromFile() {
+        db.mutex.Lock()
+        defer db.mutex.Unlock()
+
+        data, err := os.ReadFile(db.dataFile)
+        if err != nil {
+                if os.IsNotExist(err) {
+                        return // File doesn't exist yet, start with empty database
+                }
+                log.Printf("Error reading notes file: %v", err)
+                return
+        }
+
+        var records []*NotesRecord
+        if err := json.Unmarshal(data, &records); err != nil {
+                log.Printf("Error parsing notes file: %v", err)
+                return
+        }
+
+        db.records = make(map[int]*NotesRecord)
+        db.nextID = 1
+        for _, record := range records {
+                db.records[record.ID] = record
+                if record.ID >= db.nextID {
+                        db.nextID = record.ID + 1
+                }
+        }
+}
+
+// saveToFile saves notes to the JSON file
+func (db *NotesDatabase) saveToFile() error {
+        db.mutex.RLock()
+        records := make([]*NotesRecord, 0, len(db.records))
+        for _, record := range db.records {
+                records = append(records, record)
+        }
+        db.mutex.RUnlock()
+
+        data, err := json.MarshalIndent(records, "", "  ")
+        if err != nil {
+                return err
+        }
+
+        return os.WriteFile(db.dataFile, data, 0644)
+}
+
+// GetAll returns all notes
+func (db *NotesDatabase) GetAll() []*NotesRecord {
+        db.mutex.RLock()
+        defer db.mutex.RUnlock()
+
+        records := make([]*NotesRecord, 0, len(db.records))
+        for _, record := range db.records {
+                records = append(records, record)
+        }
+        return records
+}
+
+// GetByID returns a note by ID
+func (db *NotesDatabase) GetByID(id int) (*NotesRecord, bool) {
+        db.mutex.RLock()
+        defer db.mutex.RUnlock()
+
+        record, exists := db.records[id]
+        return record, exists
+}
+
+// Create adds a new note
+func (db *NotesDatabase) Create(noteTitle, noteContent string) (*NotesRecord, error) {
+        db.mutex.Lock()
+        defer db.mutex.Unlock()
+
+        record := &NotesRecord{
+                ID:          db.nextID,
+                NoteTitle:   noteTitle,
+                NoteContent: noteContent,
+                CreatedAt:   time.Now(),
+                UpdatedAt:   time.Now(),
+        }
+
+        db.records[db.nextID] = record
+        db.nextID++
+
+        if err := db.saveToFile(); err != nil {
+                return nil, err
+        }
+
+        return record, nil
+}
+
+// Update modifies an existing note
+func (db *NotesDatabase) Update(id int, noteTitle, noteContent string) (*NotesRecord, error) {
+        db.mutex.Lock()
+        defer db.mutex.Unlock()
+
+        record, exists := db.records[id]
+        if !exists {
+                return nil, fmt.Errorf("note with ID %d not found", id)
+        }
+
+        record.NoteTitle = noteTitle
+        record.NoteContent = noteContent
+        record.UpdatedAt = time.Now()
+
+        if err := db.saveToFile(); err != nil {
+                return nil, err
+        }
+
+        return record, nil
+}
+
+// Delete removes a note
+func (db *NotesDatabase) Delete(id int) error {
+        db.mutex.Lock()
+        defer db.mutex.Unlock()
+
+        if _, exists := db.records[id]; !exists {
+                return fmt.Errorf("note with ID %d not found", id)
+        }
+
+        delete(db.records, id)
+        return db.saveToFile()
 }
 
 func NewAppHub() *AppHub {
+        notesDB := NewNotesDatabase("notes_data.json")
         return &AppHub{
                 apps:       make(map[string]*AppMetadata),
                 appsFolder: "tiny_Apps",
+                notesDB:    notesDB,
         }
 }
 
@@ -214,6 +373,144 @@ func (hub *AppHub) handleAppStatic(w http.ResponseWriter, r *http.Request) {
         }
 
         http.ServeFile(w, r, fullPath)
+}
+
+// handleNotesAPI handles all notes API requests
+func (hub *AppHub) handleNotesAPI(w http.ResponseWriter, r *http.Request) {
+        w.Header().Set("Content-Type", "application/json")
+        w.Header().Set("Access-Control-Allow-Origin", "*")
+        w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+        w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+        if r.Method == "OPTIONS" {
+                w.WriteHeader(http.StatusOK)
+                return
+        }
+
+        path := strings.TrimPrefix(r.URL.Path, "/api/notes")
+        
+        switch r.Method {
+        case "GET":
+                if path == "" || path == "/" {
+                        // Get all notes
+                        notes := hub.notesDB.GetAll()
+                        json.NewEncoder(w).Encode(notes)
+                } else {
+                        // Get specific note by ID
+                        idStr := strings.TrimPrefix(path, "/")
+                        id, err := strconv.Atoi(idStr)
+                        if err != nil {
+                                http.Error(w, "Invalid note ID", http.StatusBadRequest)
+                                return
+                        }
+                        
+                        note, exists := hub.notesDB.GetByID(id)
+                        if !exists {
+                                http.Error(w, "Note not found", http.StatusNotFound)
+                                return
+                        }
+                        
+                        json.NewEncoder(w).Encode(note)
+                }
+                
+        case "POST":
+                // Create new note
+                body, err := io.ReadAll(r.Body)
+                if err != nil {
+                        http.Error(w, "Failed to read request body", http.StatusBadRequest)
+                        return
+                }
+                
+                var noteData struct {
+                        NoteTitle   string `json:"note_title"`
+                        NoteContent string `json:"note_content"`
+                }
+                
+                if err := json.Unmarshal(body, &noteData); err != nil {
+                        http.Error(w, "Invalid JSON", http.StatusBadRequest)
+                        return
+                }
+                
+                if strings.TrimSpace(noteData.NoteTitle) == "" || strings.TrimSpace(noteData.NoteContent) == "" {
+                        http.Error(w, "Title and content are required", http.StatusBadRequest)
+                        return
+                }
+                
+                note, err := hub.notesDB.Create(noteData.NoteTitle, noteData.NoteContent)
+                if err != nil {
+                        http.Error(w, "Failed to create note: "+err.Error(), http.StatusInternalServerError)
+                        return
+                }
+                
+                w.WriteHeader(http.StatusCreated)
+                json.NewEncoder(w).Encode(note)
+                
+        case "PUT":
+                // Update existing note
+                idStr := strings.TrimPrefix(path, "/")
+                id, err := strconv.Atoi(idStr)
+                if err != nil {
+                        http.Error(w, "Invalid note ID", http.StatusBadRequest)
+                        return
+                }
+                
+                body, err := io.ReadAll(r.Body)
+                if err != nil {
+                        http.Error(w, "Failed to read request body", http.StatusBadRequest)
+                        return
+                }
+                
+                var noteData struct {
+                        NoteTitle   string `json:"note_title"`
+                        NoteContent string `json:"note_content"`
+                }
+                
+                if err := json.Unmarshal(body, &noteData); err != nil {
+                        http.Error(w, "Invalid JSON", http.StatusBadRequest)
+                        return
+                }
+                
+                if strings.TrimSpace(noteData.NoteTitle) == "" || strings.TrimSpace(noteData.NoteContent) == "" {
+                        http.Error(w, "Title and content are required", http.StatusBadRequest)
+                        return
+                }
+                
+                note, err := hub.notesDB.Update(id, noteData.NoteTitle, noteData.NoteContent)
+                if err != nil {
+                        if strings.Contains(err.Error(), "not found") {
+                                http.Error(w, err.Error(), http.StatusNotFound)
+                        } else {
+                                http.Error(w, "Failed to update note: "+err.Error(), http.StatusInternalServerError)
+                        }
+                        return
+                }
+                
+                json.NewEncoder(w).Encode(note)
+                
+        case "DELETE":
+                // Delete note
+                idStr := strings.TrimPrefix(path, "/")
+                id, err := strconv.Atoi(idStr)
+                if err != nil {
+                        http.Error(w, "Invalid note ID", http.StatusBadRequest)
+                        return
+                }
+                
+                err = hub.notesDB.Delete(id)
+                if err != nil {
+                        if strings.Contains(err.Error(), "not found") {
+                                http.Error(w, err.Error(), http.StatusNotFound)
+                        } else {
+                                http.Error(w, "Failed to delete note: "+err.Error(), http.StatusInternalServerError)
+                        }
+                        return
+                }
+                
+                w.WriteHeader(http.StatusNoContent)
+                
+        default:
+                http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+        }
 }
 
 func main() {
