@@ -523,6 +523,8 @@ func main() {
 
         // Routes
         http.HandleFunc("/api/apps", hub.handleAppsAPI)
+        http.HandleFunc("/api/notes", hub.handleNotesAPI)
+        http.HandleFunc("/api/notes/", hub.handleNotesAPI)
         
         // Handle app routing
         http.HandleFunc("/app/", func(w http.ResponseWriter, r *http.Request) {
