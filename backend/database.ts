@@ -327,7 +327,7 @@ export class DatabaseManager {
     if (!await this.ensureConnection()) return [];
 
     try {
-      const result = await this.client!.queryObject<{ table_name: string; row_count: number }>(
+      const result = await this.client!.queryObject<{ table_name: string; row_count: bigint }>(
         `SELECT 
            t.table_name,
            COALESCE(s.n_tup_ins - s.n_tup_del, 0) as row_count
@@ -337,7 +337,12 @@ export class DatabaseManager {
          AND t.table_type = 'BASE TABLE'
          ORDER BY t.table_name`
       );
-      return result.rows;
+      
+      // Convert BigInt to number for JSON serialization
+      return result.rows.map(row => ({
+        table_name: row.table_name,
+        row_count: Number(row.row_count)
+      }));
     } catch (error) {
       console.error("Error fetching table info:", error);
       return [];
@@ -357,7 +362,19 @@ export class DatabaseManager {
       const result = await this.client!.queryObject(
         `SELECT * FROM ${tableName} ORDER BY created_at DESC LIMIT 100`
       );
-      return result.rows as Record<string, any>[];
+      
+      // Convert BigInt values to strings for JSON serialization
+      return result.rows.map((row: any) => {
+        const convertedRow: Record<string, any> = {};
+        for (const [key, value] of Object.entries(row)) {
+          if (typeof value === 'bigint') {
+            convertedRow[key] = value.toString();
+          } else {
+            convertedRow[key] = value;
+          }
+        }
+        return convertedRow;
+      });
     } catch (error) {
       console.error(`Error fetching data from ${tableName}:`, error);
       return [];
