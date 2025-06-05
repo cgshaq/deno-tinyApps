@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Viewer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/3/3.1.1/iconify.min.js"></script>
+    <style>
+        .table-container {
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        .data-table {
+            font-size: 0.875rem;
+        }
+        .data-table th,
+        .data-table td {
+            text-align: left;
+            vertical-align: top;
+            word-break: break-word;
+        }
+        .json-value {
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .expanded {
+            white-space: normal;
+            max-width: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <div class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-800">Database Viewer</h1>
+                <p class="text-gray-600 mt-2">View all database tables and their contents</p>
+            </div>
+            <a href="/" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2">
+                <iconify-icon icon="mdi:home"></iconify-icon>
+                Back to Hub
+            </a>
+        </div>
+
+        <div id="loading" class="text-center py-8">
+            <iconify-icon icon="mdi:loading" class="animate-spin text-4xl text-blue-500"></iconify-icon>
+            <p class="mt-2 text-gray-600">Loading database information...</p>
+        </div>
+
+        <div id="error" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+            <div class="flex">
+                <iconify-icon icon="mdi:alert-circle" class="mr-2 mt-1"></iconify-icon>
+                <span id="error-message"></span>
+            </div>
+        </div>
+
+        <div id="database-content" class="hidden">
+            <!-- Tables Overview -->
+            <div class="bg-white rounded-lg shadow-sm border mb-8">
+                <div class="bg-gray-800 text-white p-4 rounded-t-lg">
+                    <h2 class="text-xl font-semibold flex items-center gap-2">
+                        <iconify-icon icon="mdi:database"></iconify-icon>
+                        Database Tables
+                    </h2>
+                </div>
+                <div class="p-6">
+                    <div id="tables-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <!-- Table cards will be inserted here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Selected Table Data -->
+            <div id="table-data-section" class="hidden bg-white rounded-lg shadow-sm border">
+                <div class="bg-blue-600 text-white p-4 rounded-t-lg">
+                    <h3 id="table-title" class="text-xl font-semibold flex items-center gap-2">
+                        <iconify-icon icon="mdi:table"></iconify-icon>
+                        Table Data
+                    </h3>
+                </div>
+                <div class="p-6">
+                    <div id="table-loading" class="text-center py-8 hidden">
+                        <iconify-icon icon="mdi:loading" class="animate-spin text-2xl text-blue-500"></iconify-icon>
+                        <p class="mt-2 text-gray-600">Loading table data...</p>
+                    </div>
+                    
+                    <div id="table-empty" class="text-center py-8 hidden">
+                        <iconify-icon icon="mdi:table-off" class="text-4xl text-gray-400 mb-2"></iconify-icon>
+                        <p class="text-gray-600">No data found in this table</p>
+                    </div>
+                    
+                    <div id="table-content" class="table-container">
+                        <table id="data-table" class="data-table w-full border-collapse">
+                            <thead id="table-header">
+                                <!-- Headers will be inserted here -->
+                            </thead>
+                            <tbody id="table-body">
+                                <!-- Data rows will be inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="flex justify-between items-center mt-4 text-sm text-gray-600">
+                        <span id="row-count">0 rows</span>
+                        <span class="text-xs">Limited to 100 most recent entries</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class DatabaseViewer {
+            constructor() {
+                this.tables = [];
+                this.currentTable = null;
+                this.init();
+            }
+
+            async init() {
+                await this.loadTables();
+            }
+
+            async loadTables() {
+                this.showLoading(true);
+                try {
+                    const response = await fetch('/api/database/tables');
+                    if (response.ok) {
+                        this.tables = await response.json();
+                        this.renderTables();
+                        this.showContent(true);
+                    } else {
+                        this.showError('Failed to load database tables');
+                    }
+                } catch (error) {
+                    console.error('Error loading tables:', error);
+                    this.showError('Error connecting to database');
+                } finally {
+                    this.showLoading(false);
+                }
+            }
+
+            renderTables() {
+                const grid = document.getElementById('tables-grid');
+                
+                if (this.tables.length === 0) {
+                    grid.innerHTML = '<div class="col-span-full text-center py-8 text-gray-500">No tables found</div>';
+                    return;
+                }
+
+                grid.innerHTML = this.tables.map(table => `
+                    <div class="table-card border border-gray-200 rounded-lg p-4 hover:bg-gray-50 cursor-pointer transition-colors"
+                         onclick="viewer.loadTableData('${table.table_name}')">
+                        <div class="flex items-center justify-between mb-2">
+                            <h4 class="font-semibold text-gray-800">${this.escapeHtml(table.table_name)}</h4>
+                            <iconify-icon icon="mdi:table" class="text-blue-500"></iconify-icon>
+                        </div>
+                        <div class="text-sm text-gray-600">
+                            <div class="flex items-center gap-1">
+                                <iconify-icon icon="mdi:counter"></iconify-icon>
+                                <span>${table.row_count} rows</span>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            async loadTableData(tableName) {
+                this.currentTable = tableName;
+                const section = document.getElementById('table-data-section');
+                const title = document.getElementById('table-title');
+                
+                title.innerHTML = `<iconify-icon icon="mdi:table"></iconify-icon> ${this.escapeHtml(tableName)}`;
+                section.classList.remove('hidden');
+                
+                this.showTableLoading(true);
+                
+                try {
+                    const response = await fetch(`/api/database/tables/${tableName}`);
+                    if (response.ok) {
+                        const data = await response.json();
+                        this.renderTableData(data);
+                    } else {
+                        this.showError(`Failed to load data for table: ${tableName}`);
+                    }
+                } catch (error) {
+                    console.error('Error loading table data:', error);
+                    this.showError('Error loading table data');
+                } finally {
+                    this.showTableLoading(false);
+                }
+            }
+
+            renderTableData(data) {
+                const tableHeader = document.getElementById('table-header');
+                const tableBody = document.getElementById('table-body');
+                const rowCount = document.getElementById('row-count');
+                const tableEmpty = document.getElementById('table-empty');
+                const tableContent = document.getElementById('table-content');
+
+                if (data.length === 0) {
+                    tableEmpty.classList.remove('hidden');
+                    tableContent.classList.add('hidden');
+                    rowCount.textContent = '0 rows';
+                    return;
+                }
+
+                tableEmpty.classList.add('hidden');
+                tableContent.classList.remove('hidden');
+
+                // Get column names from first row
+                const columns = Object.keys(data[0]);
+                
+                // Render header
+                tableHeader.innerHTML = `
+                    <tr class="bg-gray-100">
+                        ${columns.map(col => `
+                            <th class="px-4 py-3 border-b font-semibold text-gray-700">
+                                ${this.escapeHtml(col)}
+                            </th>
+                        `).join('')}
+                    </tr>
+                `;
+
+                // Render body
+                tableBody.innerHTML = data.map((row, index) => `
+                    <tr class="${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-blue-50">
+                        ${columns.map(col => {
+                            const value = row[col];
+                            let displayValue = '';
+                            
+                            if (value === null || value === undefined) {
+                                displayValue = '<span class="text-gray-400 italic">null</span>';
+                            } else if (typeof value === 'object') {
+                                displayValue = `<span class="json-value font-mono text-xs" onclick="this.classList.toggle('expanded')">${this.escapeHtml(JSON.stringify(value))}</span>`;
+                            } else if (typeof value === 'string' && value.length > 50) {
+                                displayValue = `<span class="json-value" onclick="this.classList.toggle('expanded')" title="${this.escapeHtml(value)}">${this.escapeHtml(value)}</span>`;
+                            } else {
+                                displayValue = this.escapeHtml(String(value));
+                            }
+                            
+                            return `<td class="px-4 py-3 border-b">${displayValue}</td>`;
+                        }).join('')}
+                    </tr>
+                `).join('');
+
+                rowCount.textContent = `${data.length} rows`;
+            }
+
+            showLoading(show) {
+                const loading = document.getElementById('loading');
+                const content = document.getElementById('database-content');
+                
+                if (show) {
+                    loading.classList.remove('hidden');
+                    content.classList.add('hidden');
+                } else {
+                    loading.classList.add('hidden');
+                }
+            }
+
+            showContent(show) {
+                const content = document.getElementById('database-content');
+                if (show) {
+                    content.classList.remove('hidden');
+                }
+            }
+
+            showTableLoading(show) {
+                const loading = document.getElementById('table-loading');
+                const empty = document.getElementById('table-empty');
+                const content = document.getElementById('table-content');
+                
+                if (show) {
+                    loading.classList.remove('hidden');
+                    empty.classList.add('hidden');
+                    content.classList.add('hidden');
+                } else {
+                    loading.classList.add('hidden');
+                }
+            }
+
+            showError(message) {
+                const error = document.getElementById('error');
+                const errorMessage = document.getElementById('error-message');
+                
+                errorMessage.textContent = message;
+                error.classList.remove('hidden');
+                
+                setTimeout(() => {
+                    error.classList.add('hidden');
+                }, 5000);
+            }
+
+            escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+        }
+
+        // Initialize the database viewer
+        let viewer;
+        document.addEventListener('DOMContentLoaded', () => {
+            viewer = new DatabaseViewer();
+        });
+    </script>
+</body>
+</html>

@@ -39,6 +39,15 @@ app.use(async (ctx, next) => {
       ctx.response.status = 404;
       ctx.response.body = "Frontend not found";
     }
+  } else if (ctx.request.url.pathname === "/database") {
+    try {
+      const content = await Deno.readTextFile("frontend/database-viewer.html");
+      ctx.response.headers.set("Content-Type", "text/html");
+      ctx.response.body = content;
+    } catch {
+      ctx.response.status = 404;
+      ctx.response.body = "Database viewer not found";
+    }
   } else if (ctx.request.url.pathname.startsWith("/static/")) {
     const filePath = ctx.request.url.pathname.replace("/static/", "frontend/");
     try {

@@ -58,6 +58,19 @@ export class DatabaseManager {
       );
       
       CREATE INDEX IF NOT EXISTS idx_notes_records_created_at ON notes_records(created_at DESC);
+      
+      CREATE TABLE IF NOT EXISTS kanban_tasks (
+        id SERIAL PRIMARY KEY,
+        title VARCHAR(255) NOT NULL,
+        description TEXT,
+        status VARCHAR(50) NOT NULL DEFAULT 'todo',
+        priority VARCHAR(20) NOT NULL DEFAULT 'medium',
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+      );
+      
+      CREATE INDEX IF NOT EXISTS idx_kanban_tasks_status ON kanban_tasks(status);
+      CREATE INDEX IF NOT EXISTS idx_kanban_tasks_created_at ON kanban_tasks(created_at DESC);
     `);
   }
 
