@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kanban Board</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/3/3.1.1/iconify.min.js"></script>
+    <style>
+        .kanban-column {
+            min-height: 500px;
+        }
+        .task-card {
+            transition: all 0.3s ease;
+        }
+        .task-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        .drag-over {
+            background-color: #f3f4f6;
+            border: 2px dashed #6b7280;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <div class="flex justify-between items-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-800">Kanban Board</h1>
+            <button id="new-task-btn" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2">
+                <iconify-icon icon="mdi:plus"></iconify-icon>
+                New Task
+            </button>
+        </div>
+
+        <div id="loading" class="text-center py-8">
+            <iconify-icon icon="mdi:loading" class="animate-spin text-4xl text-blue-500"></iconify-icon>
+            <p class="mt-2 text-gray-600">Loading tasks...</p>
+        </div>
+
+        <div id="kanban-board" class="grid grid-cols-1 md:grid-cols-3 gap-6 hidden">
+            <div class="kanban-column" data-status="todo">
+                <div class="bg-white rounded-lg shadow-sm border">
+                    <div class="bg-red-500 text-white p-4 rounded-t-lg">
+                        <h2 class="font-semibold flex items-center gap-2">
+                            <iconify-icon icon="mdi:clipboard-list"></iconify-icon>
+                            To Do
+                            <span id="todo-count" class="bg-red-600 px-2 py-1 rounded-full text-sm">0</span>
+                        </h2>
+                    </div>
+                    <div id="todo-tasks" class="p-4 min-h-96 tasks-container">
+                        <!-- Tasks will be inserted here -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="kanban-column" data-status="in_progress">
+                <div class="bg-white rounded-lg shadow-sm border">
+                    <div class="bg-yellow-500 text-white p-4 rounded-t-lg">
+                        <h2 class="font-semibold flex items-center gap-2">
+                            <iconify-icon icon="mdi:clock"></iconify-icon>
+                            In Progress
+                            <span id="in_progress-count" class="bg-yellow-600 px-2 py-1 rounded-full text-sm">0</span>
+                        </h2>
+                    </div>
+                    <div id="in_progress-tasks" class="p-4 min-h-96 tasks-container">
+                        <!-- Tasks will be inserted here -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="kanban-column" data-status="done">
+                <div class="bg-white rounded-lg shadow-sm border">
+                    <div class="bg-green-500 text-white p-4 rounded-t-lg">
+                        <h2 class="font-semibold flex items-center gap-2">
+                            <iconify-icon icon="mdi:check"></iconify-icon>
+                            Done
+                            <span id="done-count" class="bg-green-600 px-2 py-1 rounded-full text-sm">0</span>
+                        </h2>
+                    </div>
+                    <div id="done-tasks" class="p-4 min-h-96 tasks-container">
+                        <!-- Tasks will be inserted here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Task Modal -->
+    <div id="task-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+            <div class="flex justify-between items-center mb-4">
+                <h3 id="modal-title" class="text-lg font-semibold">New Task</h3>
+                <button id="close-modal" class="text-gray-500 hover:text-gray-700">
+                    <iconify-icon icon="mdi:close"></iconify-icon>
+                </button>
+            </div>
+            
+            <form id="task-form">
+                <input type="hidden" id="task-id" name="task_id">
+                
+                <div class="mb-4">
+                    <label for="task-title" class="block text-sm font-medium text-gray-700 mb-2">Title</label>
+                    <input type="text" id="task-title" name="title" required 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                
+                <div class="mb-4">
+                    <label for="task-description" class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                    <textarea id="task-description" name="description" rows="3"
+                              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                </div>
+                
+                <div class="mb-4">
+                    <label for="task-priority" class="block text-sm font-medium text-gray-700 mb-2">Priority</label>
+                    <select id="task-priority" name="priority" 
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="low">Low</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="high">High</option>
+                    </select>
+                </div>
+                
+                <div class="mb-6">
+                    <label for="task-status" class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                    <select id="task-status" name="status" 
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="todo">To Do</option>
+                        <option value="in_progress">In Progress</option>
+                        <option value="done">Done</option>
+                    </select>
+                </div>
+                
+                <div class="flex gap-3">
+                    <button type="submit" class="flex-1 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md">
+                        Save Task
+                    </button>
+                    <button type="button" id="cancel-btn" class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-700 py-2 px-4 rounded-md">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

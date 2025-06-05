@@ -20,15 +20,19 @@ export function createRouter(appHub: AppHub, db: DatabaseManager): Router {
   router.post("/api/notes", async (ctx) => {
     try {
       const body = await ctx.request.body({ type: "json" }).value;
-      const { title, content } = body;
+      const { title, content, note_title, note_content } = body;
       
-      if (!title || !content) {
+      // Support both field naming conventions
+      const noteTitle = title || note_title;
+      const noteContent = content || note_content;
+      
+      if (!noteTitle || !noteContent) {
         ctx.response.status = 400;
         ctx.response.body = { error: "Title and content are required" };
         return;
       }
       
-      const note = await db.createNote(title, content);
+      const note = await db.createNote(noteTitle, noteContent);
       if (note) {
         ctx.response.status = 201;
         ctx.response.body = note;
@@ -53,15 +57,19 @@ export function createRouter(appHub: AppHub, db: DatabaseManager): Router {
       }
 
       const body = await ctx.request.body({ type: "json" }).value;
-      const { title, content } = body;
+      const { title, content, note_title, note_content } = body;
       
-      if (!title || !content) {
+      // Support both field naming conventions
+      const noteTitle = title || note_title;
+      const noteContent = content || note_content;
+      
+      if (!noteTitle || !noteContent) {
         ctx.response.status = 400;
         ctx.response.body = { error: "Title and content are required" };
         return;
       }
       
-      const note = await db.updateNote(id, title, content);
+      const note = await db.updateNote(id, noteTitle, noteContent);
       if (note) {
         ctx.response.body = note;
       } else {

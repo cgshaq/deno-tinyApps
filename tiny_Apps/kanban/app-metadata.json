@@ -1,0 +1,11 @@
+{
+    "title": "Kanban Board",
+    "description": "A drag-and-drop kanban board for task management with database persistence. Organize tasks into To Do, In Progress, and Done columns.",
+    "icon": "mdi:view-column",
+    "created": "2025-06-04T22:30:00Z",
+    "modified": "2025-06-04T22:30:00Z",
+    "visit_count": 0,
+    "color": "#10b981",
+    "category": "Productivity",
+    "tags": ["kanban", "tasks", "project-management", "database", "drag-drop"]
+}
