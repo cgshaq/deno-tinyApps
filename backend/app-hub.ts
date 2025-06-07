@@ -1,3 +1,5 @@
+import { join, normalize } from "https://deno.land/std@0.200.0/path/mod.ts";
+
 export interface AppMetadata {
   title: string;
   description: string;
@@ -99,7 +101,14 @@ export class AppHub {
 
   async serveStaticFile(appName: string, filePath: string): Promise<{ content: Uint8Array; contentType: string } | null> {
     try {
-      const fullPath = `${this.appsFolder}/${appName}/${filePath}`;
+      const basePath = join(this.appsFolder, appName);
+      const fullPath = normalize(join(basePath, filePath));
+
+      // Prevent directory traversal
+      if (!fullPath.startsWith(basePath)) {
+        return null;
+      }
+
       const content = await Deno.readFile(fullPath);
       
       // Determine content type
