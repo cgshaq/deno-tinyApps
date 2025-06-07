@@ -66,3 +66,4 @@ Example metadata:
 ## Environment Variables
 
 - `DATABASE_URL` - PostgreSQL connection string (for notes functionality)
+
