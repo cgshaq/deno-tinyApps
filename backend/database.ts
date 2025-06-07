@@ -21,6 +21,13 @@ export interface KanbanTask {
 export class DatabaseManager {
   private db = new Database();
 
+  private async setWithLog(key: string, value: any): Promise<void> {
+    const result = await this.db.set(key, value);
+    if (result && (result as any).ok === false) {
+      console.error(`Failed to set ${key}:`, (result as any).error);
+    }
+  }
+
   async connect(): Promise<boolean> {
     return true;
   }
@@ -30,8 +37,13 @@ export class DatabaseManager {
   }
 
   private async getArray<T>(key: string): Promise<T[]> {
-    const value = await this.db.get(key);
-    return Array.isArray(value) ? value as T[] : [];
+    const result = await this.db.get(key);
+    if (result && (result as any).ok !== undefined) {
+      return Array.isArray((result as any).value)
+        ? ((result as any).value as T[])
+        : [];
+    }
+    return Array.isArray(result) ? (result as T[]) : [];
   }
 
   // Notes methods
@@ -50,7 +62,7 @@ export class DatabaseManager {
       updated_at: now,
     };
     notes.unshift(note);
-    await this.db.set("notes_records", notes);
+    await this.setWithLog("notes_records", notes);
     return note;
   }
 
@@ -68,7 +80,7 @@ export class DatabaseManager {
     note.note_content = content;
     note.updated_at = new Date().toISOString();
     notes[idx] = note;
-    await this.db.set("notes_records", notes);
+    await this.setWithLog("notes_records", notes);
     return note;
   }
 
@@ -77,7 +89,7 @@ export class DatabaseManager {
     const idx = notes.findIndex((n) => n.id === id);
     if (idx === -1) return false;
     notes.splice(idx, 1);
-    await this.db.set("notes_records", notes);
+    await this.setWithLog("notes_records", notes);
     return true;
   }
 
@@ -104,7 +116,7 @@ export class DatabaseManager {
       updated_at: now,
     };
     tasks.unshift(task);
-    await this.db.set("kanban_tasks", tasks);
+    await this.setWithLog("kanban_tasks", tasks);
     return task;
   }
 
@@ -126,7 +138,7 @@ export class DatabaseManager {
     task.priority = priority;
     task.updated_at = new Date().toISOString();
     tasks[idx] = task;
-    await this.db.set("kanban_tasks", tasks);
+    await this.setWithLog("kanban_tasks", tasks);
     return task;
   }
 
@@ -135,7 +147,7 @@ export class DatabaseManager {
     const idx = tasks.findIndex((t) => t.id === id);
     if (idx === -1) return false;
     tasks.splice(idx, 1);
-    await this.db.set("kanban_tasks", tasks);
+    await this.setWithLog("kanban_tasks", tasks);
     return true;
   }
 
