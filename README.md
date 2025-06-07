@@ -19,7 +19,7 @@ A dynamic web application hub built with Deno and TypeScript that automatically 
 ## Features
 
 - **Auto-discovery**: Automatically scans `tiny_Apps` folder for HTML applications
-- **PostgreSQL Integration**: Notes API with database persistence
+- **Replit Key-Value Store**: Notes and Kanban APIs backed by Replit's built-in database
 - **TypeScript**: Full TypeScript support with Deno
 - **CORS Support**: Cross-origin requests enabled
 - **Static File Serving**: Serves app assets with proper MIME types
@@ -65,5 +65,5 @@ Example metadata:
 
 ## Environment Variables
 
-- `DATABASE_URL` - PostgreSQL connection string (for notes functionality)
+When running on Replit the database URL is provided automatically as `REPLIT_DB_URL`. If running locally you can export this variable with the connection string from your Replit workspace.
 
