@@ -130,6 +130,50 @@ export function createRouter(appHub: AppHub, db: DatabaseManager): Router {
     ctx.response.body = data;
   });
 
+  // TW Grid Links API
+  router.get("/api/tw-grid-links", async (ctx) => {
+    try {
+      const links = await db.getTwGridLinks();
+      ctx.response.body = links;
+    } catch (error) {
+      console.error("Error in GET /api/tw-grid-links:", error);
+      ctx.response.status = 500;
+      ctx.response.body = { error: "Internal server error while retrieving links." };
+    }
+  });
+
+  router.post("/api/tw-grid-links", async (ctx) => {
+    try {
+      const body = await ctx.request.body({ type: "json" }).value;
+      if (!Array.isArray(body)) {
+        ctx.response.status = 400;
+        ctx.response.body = { error: "Request body must be an array of links." };
+        return;
+      }
+      // Add more specific validation for link objects if necessary
+      // e.g. check for id, name, url properties
+
+      const success = await db.setTwGridLinks(body);
+      if (success) {
+        ctx.response.status = 200; // Or 201 if you consider it a "creation" each time
+        ctx.response.body = { message: "Links updated successfully." };
+      } else {
+        ctx.response.status = 500;
+        ctx.response.body = { error: "Failed to update links in the database." };
+      }
+    } catch (error) {
+      console.error("Error in POST /api/tw-grid-links:", error);
+      // Check if the error is due to invalid JSON body
+      if (error instanceof SyntaxError || (error instanceof TypeError && error.message.includes("consuming"))) {
+        ctx.response.status = 400;
+        ctx.response.body = { error: "Invalid JSON in request body." };
+      } else {
+        ctx.response.status = 500;
+        ctx.response.body = { error: "Internal server error while updating links." };
+      }
+    }
+  });
+
   router.post("/api/notes", async (ctx) => {
     try {
       const body = await ctx.request.body({ type: "json" }).value;

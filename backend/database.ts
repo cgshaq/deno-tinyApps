@@ -168,6 +168,73 @@ export class DatabaseManager {
     if (tableName === "kanban_tasks") {
       return await this.getArray<KanbanTask>("kanban_tasks") as Record<string, any>[];
     }
+    if (tableName === "tw_grid_links") {
+      const links = await this.getTwGridLinks();
+      return links as Record<string, any>[];
+    }
     return [];
+  }
+
+  // TW Grid Links methods
+  async getTwGridLinks(): Promise<any[]> {
+    const defaultLinks = [
+      { id: "1", name: "Replit Home", url: "https://replit.com", icon: "https://replit.com/favicon.ico" },
+      { id: "2", name: "Replit Docs", url: "https://docs.replit.com", icon: "https://docs.replit.com/favicon.ico" },
+      { id: "3", name: "Replit Community", url: "https://replit.com/community", icon: "https://replit.com/favicon.ico" },
+      { id: "4", name: "Oak Framework", url: "https://deno.land/x/oak", icon: "https://deno.land/favicon.ico" },
+    ];
+    try {
+      const result: any = await this.db.get("tw_grid_links");
+
+      // Check if result is the raw value or an object wrapper
+      if (result === null || result === undefined) {
+        console.log("No 'tw_grid_links' found in DB, returning default links.");
+        return defaultLinks;
+      }
+
+      // The Replit DB client sometimes returns the value directly,
+      // and sometimes wraps it in an object like { ok: true, value: ... } or { ok: false, error: ... }
+      // It seems this behavior might depend on the specific client version or operation.
+      // The existing getArray method checks for `result.ok !== undefined`
+      if (result && result.ok !== undefined) {
+        if (result.ok && Array.isArray(result.value)) {
+          return result.value;
+        } else if (result.ok && result.value === null) { // Key exists but value is explicitly null
+           console.log("'tw_grid_links' is null in DB, returning default links.");
+           return defaultLinks;
+        } else if (!result.ok) {
+          console.error("Error fetching 'tw_grid_links' (wrapped error):", result.error);
+          return defaultLinks; // Or throw error
+        }
+      }
+
+      // If it's not wrapped and is an array, return it
+      if (Array.isArray(result)) {
+        return result;
+      }
+
+      // If it's not an array and not null/undefined by this point, it's unexpected.
+      console.warn("Unexpected data format for 'tw_grid_links', returning default links. Data:", result);
+      return defaultLinks;
+
+    } catch (error) {
+      console.error("Exception fetching 'tw_grid_links':", error);
+      return defaultLinks; // Or throw error
+    }
+  }
+
+  async setTwGridLinks(links: any[]): Promise<boolean> {
+    try {
+      // Using this.db.set directly as setWithLog is not typed for boolean return
+      // and we want to provide direct feedback on success/failure of this specific operation.
+      await this.db.set("tw_grid_links", links);
+      // Replit DB's set typically doesn't throw for simple errors but might return a result object.
+      // However, the client version 3.0.1 used here is simpler and usually returns undefined or throws on major issues.
+      // For robustness, one might re-fetch the key to confirm it was set, but that's often overkill.
+      return true;
+    } catch (error) {
+      console.error("Failed to set 'tw_grid_links':", error);
+      return false;
+    }
   }
 }

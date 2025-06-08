@@ -254,6 +254,14 @@
             font-size: 0.875rem;
         }
 
+        .footer a {
+            color: hsl(var(--primary));
+            text-decoration: none;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
         .refresh-btn {
             cursor: pointer;
             transition: transform 0.2s ease;
@@ -324,9 +332,9 @@
 
         <footer id="footer" class="footer">
             <p>
-                <span class="iconify h-5 w-5 mr-2" data-icon="mdi:refresh" data-inline="false" id="refresh-btn"></span>
-                <span id="app-count">0 apps</span> • Last updated:
-                <span id="last-updated">Never</span>
+                <span class="iconify h-5 w-5 mr-2 refresh-btn" data-icon="mdi:refresh" data-inline="false" id="refresh-btn" title="Refresh app list"></span>
+                <span id="app-count">0 apps</span> • Last updated: <span id="last-updated">Never</span>
+                • <a href="/database" title="View App Database">View Database</a>
             </p>
         </footer>
     </div>

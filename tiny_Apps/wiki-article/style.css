@@ -1,14 +1,15 @@
 :root {
-    --primary: 9 105 218; /* #0969da */
+    /* Wikipedia-inspired Neutral Palette */
+    --primary: 32 55 89; /* #203759 - A muted blue, less prominent */
     --background: 0 0% 100%; /* #ffffff */
-    --surface: 246 246 246; /* #f6f6f6 */
-    --border: 208 25% 90%; /* #d0d7de */
-    --text: 31 35 40; /* #1f2328 */
-    --text-muted: 101 109 118; /* #656d76 */
-    --link: 9 105 218; /* #0969da */
-    --link-hover: 4 81 165; /* #0550a5 */
-    --radius: 6px;
-    --shadow: 0 1px 3px rgba(31, 35, 40, 0.12);
+    --surface: 248 249 250; /* #f8f9fa - Wikipedia's light gray */
+    --border: 162 169 177; /* #a2a9b1 - Wikipedia's common border color */
+    --text: 32 33 34; /* #202122 - Wikipedia's main text color */
+    --text-muted: 84 89 93; /* #54595d - Wikipedia's muted text color */
+    --link: 6 69 173; /* #0645ad - Wikipedia's standard link color */
+    --link-hover: 11 127 220; /* #0b7fcc - A slightly brighter blue for hover, or just underline */
+    --radius: 3px; /* Subtle rounding */
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.05); /* Softer shadow */
 }
 
 * {
@@ -18,7 +19,7 @@
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+    font-family: Georgia, "Times New Roman", Times, serif; /* Serif for main content */
     background-color: rgb(var(--background));
     color: rgb(var(--text));
     line-height: 1.6;
@@ -36,11 +37,12 @@ body {
 .header {
     background-color: rgb(var(--surface));
     border-bottom: 1px solid rgb(var(--border));
-    padding: 1rem 2rem;
+    padding: 0.75rem 2rem; /* Adjusted padding */
+    font-family: sans-serif; /* UI elements sans-serif */
 }
 
 .breadcrumb {
-    font-size: 0.875rem;
+    font-size: 0.8rem; /* Slightly smaller */
     margin-bottom: 0.5rem;
     color: rgb(var(--text-muted));
 }
@@ -54,34 +56,36 @@ body {
 }
 
 .breadcrumb a:hover {
-    color: rgb(var(--link-hover));
+    text-decoration: underline; /* Standard hover effect */
 }
 
-.header h1 {
-    font-size: 2rem;
+.header h1 { /* Site title / section title in header */
+    font-size: 1.5rem; /* Adjusted size */
     font-weight: 600;
     margin-bottom: 0.25rem;
 }
 
-.header p {
+.header p { /* Subtitle in header */
     color: rgb(var(--text-muted));
+    font-size: 0.9rem;
 }
 
 /* Navigation */
 .nav {
     background-color: rgb(var(--surface));
     border-bottom: 1px solid rgb(var(--border));
-    padding: 1rem 2rem;
+    padding: 0.75rem 2rem; /* Adjusted padding */
+    font-family: sans-serif; /* UI elements sans-serif */
 }
 
 .search-box {
     position: relative;
-    max-width: 400px;
+    max-width: 360px; /* Slightly smaller */
 }
 
 .search-box iconify-icon {
     position: absolute;
-    left: 12px;
+    left: 10px; /* Adjusted position */
     top: 50%;
     transform: translateY(-50%);
     color: rgb(var(--text-muted));
@@ -89,49 +93,53 @@ body {
 
 .search-box input {
     width: 100%;
-    padding: 8px 8px 8px 40px;
+    padding: 0.5rem 0.5rem 0.5rem 2.25rem; /* Adjusted padding */
     border: 1px solid rgb(var(--border));
     border-radius: var(--radius);
-    font-size: 0.875rem;
+    font-size: 0.9rem; /* Adjusted font size */
     background-color: rgb(var(--background));
+    font-family: sans-serif; /* UI element */
 }
 
 .search-box input:focus {
     outline: none;
-    border-color: rgb(var(--primary));
-    box-shadow: 0 0 0 3px rgba(9, 105, 218, 0.1);
+    border-color: rgb(var(--link)); /* Use link color for focus, similar to Wikipedia */
+    box-shadow: 0 0 0 2px rgba(var(--link), 0.15); /* Softer focus shadow */
 }
 
 /* Main Content */
 .main {
     flex: 1;
-    padding: 2rem;
+    padding: 1.5rem 2rem; /* Adjusted padding */
     display: flex;
     gap: 2rem;
 }
 
 .article {
     flex: 1;
-    max-width: 800px;
+    max-width: 800px; /* Keep max-width for readability */
 }
 
 .article-header {
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem; /* Adjusted margin */
     padding-bottom: 1rem;
-    border-bottom: 1px solid rgb(var(--border));
+    /* Wikipedia has a light bottom border under the title area */
+    border-bottom: 1px solid #eaecf0; /* Lighter border like Wikipedia */
 }
 
-.article-header h1 {
-    font-size: 2.5rem;
-    font-weight: 400;
-    margin-bottom: 0.5rem;
-    border-bottom: 3px solid rgb(var(--border));
-    padding-bottom: 0.5rem;
+.article-header h1 { /* This is the main article title */
+    font-size: 2.2rem; /* Slightly adjusted */
+    font-weight: normal; /* Standard for serif headlines */
+    margin-bottom: 0.25rem; /* Reduced margin */
+    /* Removed specific border from here, using the one in .article-header */
+    padding-bottom: 0;
+    font-family: Georgia, "Times New Roman", Times, serif; /* Ensure it's serif */
 }
 
 .article-meta {
-    font-size: 0.875rem;
+    font-size: 0.8rem; /* Slightly smaller */
     color: rgb(var(--text-muted));
+    font-family: sans-serif; /* UI/meta element */
 }
 
 /* Article Content */
@@ -142,50 +150,59 @@ body {
 .infobox {
     float: right;
     width: 300px;
-    margin: 0 0 1rem 1rem;
+    margin: 0 0 1rem 1.5rem; /* Increased left margin */
     background-color: rgb(var(--surface));
     border: 1px solid rgb(var(--border));
     border-radius: var(--radius);
     padding: 1rem;
-    font-size: 0.875rem;
+    font-size: 0.85rem; /* Slightly smaller base font for infobox */
+    font-family: sans-serif; /* UI Element */
+    color: rgb(var(--text)); /* Ensure text color isn't too muted */
 }
 
-.infobox h3 {
+.infobox h3 { /* Title within infobox */
     text-align: center;
-    font-size: 1.1rem;
-    margin-bottom: 1rem;
+    font-size: 1rem; /* Adjusted size */
+    font-weight: bold;
+    margin-bottom: 0.75rem;
     padding-bottom: 0.5rem;
     border-bottom: 1px solid rgb(var(--border));
+    color: rgb(var(--text)); /* Ensure title is not too muted */
 }
 
 .infobox-row {
     margin-bottom: 0.5rem;
+    line-height: 1.4; /* Slightly tighter line height for infobox rows */
 }
 
-.article-content h2 {
-    font-size: 1.5rem;
-    font-weight: 500;
+.article-content h2 { /* Section Headings */
+    font-family: sans-serif; /* Wikipedia uses sans-serif for section headings */
+    font-size: 1.75rem; /* Larger, more prominent */
+    font-weight: normal; /* Wikipedia h2s are not overly bold */
     margin: 2rem 0 1rem 0;
-    border-bottom: 1px solid rgb(var(--border));
-    padding-bottom: 0.25rem;
+    border-bottom: 1px solid #eaecf0; /* Lighter border like Wikipedia */
+    padding-bottom: 0.3rem;
 }
 
-.article-content h3 {
-    font-size: 1.25rem;
-    font-weight: 500;
+.article-content h3 { /* Sub-section Headings */
+    font-family: sans-serif; /* Wikipedia uses sans-serif for sub-section headings */
+    font-size: 1.4rem; /* Adjusted size */
+    font-weight: normal; /* Wikipedia h3s are not overly bold */
     margin: 1.5rem 0 0.75rem 0;
 }
 
 .article-content p {
     margin-bottom: 1rem;
+    line-height: 1.7; /* Slightly more line height for serif body */
 }
 
 .article-content ul {
-    margin: 0.5rem 0 1rem 2rem;
+    margin: 0.5rem 0 1rem 1.5rem; /* Adjusted left margin for ul */
+    list-style-type: disc; /* Explicitly set disc for main lists */
 }
 
 .article-content li {
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.3rem; /* Slightly more space between list items */
 }
 
 .article-content a {
@@ -194,72 +211,113 @@ body {
 }
 
 .article-content a:hover {
-    color: rgb(var(--link-hover));
+    /* color: rgb(var(--link-hover)); -- Removing explicit hover color change */
     text-decoration: underline;
 }
 
 .see-also {
     background-color: rgb(var(--surface));
-    border: 1px solid rgb(var(--border));
+    border: 1px solid #eaecf0; /* Lighter border, consistent with article header */
     border-radius: var(--radius);
-    padding: 1rem;
+    padding: 1rem 1.5rem; /* Adjusted padding */
     margin: 2rem 0;
+    font-family: sans-serif; /* UI-like section */
 }
 
 .see-also h3 {
-    margin-bottom: 0.5rem;
-    font-size: 1rem;
+    margin-bottom: 0.75rem; /* Adjusted margin */
+    font-size: 1.1rem; /* Adjusted size */
+    font-weight: bold;
 }
 
 .see-also ul {
     margin-left: 1.5rem;
+    list-style-type: disc;
 }
+
+.see-also li a {
+    color: rgb(var(--link));
+    text-decoration: none;
+}
+.see-also li a:hover {
+    text-decoration: underline;
+}
+
 
 /* Article Footer */
 .article-footer {
     margin-top: 2rem;
     padding-top: 1rem;
-    border-top: 1px solid rgb(var(--border));
+    border-top: 1px solid #eaecf0; /* Lighter border */
+    font-family: sans-serif; /* Meta content */
 }
 
 .categories {
-    font-size: 0.875rem;
+    font-size: 0.9rem; /* Adjusted size */
+    color: rgb(var(--text-muted));
+}
+.categories strong {
+    color: rgb(var(--text));
+    font-weight: bold;
 }
 
+.categories a {
+    color: rgb(var(--link));
+    text-decoration: none;
+    margin-left: 0.25rem;
+}
+.categories a:hover {
+    text-decoration: underline;
+}
+/* Remove old .category styling */
 .category {
-    display: inline-block;
+    /* display: inline-block;
     background-color: rgba(9, 105, 218, 0.1);
     color: rgb(var(--primary));
     padding: 0.25rem 0.5rem;
     border-radius: 3px;
     margin-left: 0.5rem;
-    font-size: 0.75rem;
+    font-size: 0.75rem; */
+    /* Replaced by direct styling of links within .categories */
 }
+
 
 /* Footer */
 .footer {
     background-color: rgb(var(--surface));
-    border-top: 1px solid rgb(var(--border));
-    padding: 1rem 2rem;
+    border-top: 1px solid #eaecf0; /* Lighter border */
+    padding: 1.5rem 2rem; /* Adjusted padding */
     text-align: center;
     color: rgb(var(--text-muted));
-    font-size: 0.875rem;
+    font-size: 0.85rem; /* Adjusted size */
+    font-family: sans-serif; /* UI element */
 }
 
 /* Responsive */
 @media (max-width: 768px) {
-    .header, .nav, .main, .footer {
+    .header, .nav, .footer { /* Main was separated for clarity */
         padding-left: 1rem;
         padding-right: 1rem;
+    }
+    .main {
+        padding: 1rem; /* Adjusted main content padding for smaller screens */
     }
 
     .infobox {
         float: none;
         width: 100%;
-        margin: 1rem 0;
+        margin: 1rem 0 1rem 0; /* Ensure consistent vertical margin */
     }
 
     .article-header h1 {
         font-size: 2rem;
+    }
+
+    .article-content h2 {
+        font-size: 1.5rem; /* Adjust h2 size for mobile */
+    }
+
+    .article-content h3 {
+        font-size: 1.25rem; /* Adjust h3 size for mobile */
     }
 }
